@@ -6,13 +6,13 @@ import {
   showSuccess,
   showError,
   showConfirm,
+  apiBaseUrl,
 } from "../../Helper";
-import { useNavigate } from "react-router-dom";
 
-// get invoice
+// Get Invoices
 export const getUserInvoice = (setInvoices, setLoading) => {
   axios
-    .post("https://dev.avidrise.co.in/invoices/get-user-invoices", { user_id: getUserId() })
+    .post(apiBaseUrl("/invoices/get-user-invoices"), { user_id: getUserId() })
     .then((res) => {
       const data = res.data?.data || [];
       const activeInvoices = data.filter((inv) => inv.status === "active");
@@ -26,13 +26,11 @@ export const getUserInvoice = (setInvoices, setLoading) => {
     });
 };
 
-// add update invoice data
+// Add or Update Invoice
 export const addUpdateInvoice = (data, navigate) => {
   axios
-    .post("https://dev.avidrise.co.in/invoices/add-update", data, {
-      headers: {
-        "Content-Type": "application/json", // Important for raw JSON
-      },
+    .post(apiBaseUrl("/invoices/add-update"), data, {
+      headers: { "Content-Type": "application/json" },
     })
     .then((res) => {
       console.log("✅ Invoice saved:", res.data);
@@ -43,19 +41,21 @@ export const addUpdateInvoice = (data, navigate) => {
     });
 };
 
-  // Delete Invoice
-export const deleteInvoice = (invoice_id ,setInvoices) => {
+// Delete Invoice
+export const deleteInvoice = (invoice_id, setInvoices) => {
   showConfirm().then((result) => {
     if (result.isConfirmed) {
       axios
-        .post("https://dev.avidrise.co.in/invoices/add-update", {
+        .post(apiBaseUrl("/invoices/add-update"), {
           user_id: getUserId(),
-          invoice_id: invoice_id,
+          invoice_id,
           status: "inactive",
         })
         .then(() => {
           showSuccess("Item has been deleted");
-          setInvoices((prev) => prev.filter((invoice) => invoice.invoice_id !== invoice_id));
+          setInvoices((prev) =>
+            prev.filter((invoice) => invoice.invoice_id !== invoice_id)
+          );
         })
         .catch(() => {
           showError("Failed to delete the item.");
@@ -67,7 +67,7 @@ export const deleteInvoice = (invoice_id ,setInvoices) => {
 // Add or Update Client
 export const addOrUpdateClient = (clientData, navigate, setLoading) => {
   axios
-    .post("https://dev.avidrise.co.in/clients/add-update", clientData)
+    .post(apiBaseUrl("/clients/add-update"), clientData)
     .then(() => {
       setLoading(false);
       showSuccess("Client has been saved successfully");
@@ -78,10 +78,11 @@ export const addOrUpdateClient = (clientData, navigate, setLoading) => {
       showError("There was an error saving the client information.");
     });
 };
+
 // Get Clients
 export const getClients = (setClients, setLoading) => {
   axios
-    .post("https://dev.avidrise.co.in/clients/get-user-clients", { user_id: getUserId() })
+    .post(apiBaseUrl("/clients/get-user-clients"), { user_id: getUserId() })
     .then((res) => {
       setClients(res.data.data || []);
       setLoading(false);
@@ -97,9 +98,9 @@ export const deleteClient = (client_id, setClients) => {
   showConfirm("Are you sure?").then((result) => {
     if (result.isConfirmed) {
       axios
-        .post("https://dev.avidrise.co.inclients/add-update", {
+        .post(apiBaseUrl("/clients/add-update"), {
           user_id: getUserId(),
-          client_id: client_id,
+          client_id,
           status: "inactive",
         })
         .then(() => {
@@ -118,7 +119,7 @@ export const deleteClient = (client_id, setClients) => {
 // Get User Profile
 export const getUserProfile = (setLoading, setFormData) => {
   axios
-    .get(`https://dev.avidrise.co.in/user/get-user/${getUserId()}`, {
+    .get(apiBaseUrl(`/user/get-user/${getUserId()}`), {
       headers: {
         Authorization: `Bearer ${getAccessToken()}`,
       },
@@ -136,7 +137,7 @@ export const getUserProfile = (setLoading, setFormData) => {
 // Update Profile
 export const updateProfile = (setIsSubmitting, formData) => {
   axios
-    .post("https://dev.avidrise.co.in/user/update-profile", formData)
+    .post(apiBaseUrl("/user/update-profile"), formData)
     .then(() => {
       showSuccess("Profile has been updated");
     })
@@ -152,7 +153,7 @@ export const updateProfile = (setIsSubmitting, formData) => {
 // Add or Update Item
 export const addOrUpdateItem = (itemData, navigate, setLoading) => {
   axios
-    .post("https://dev.avidrise.co.in/items/add-update", itemData)
+    .post(apiBaseUrl("/items/add-update"), itemData)
     .then(() => {
       showSuccess("Item has been saved successfully");
       navigate("/items");
@@ -165,10 +166,10 @@ export const addOrUpdateItem = (itemData, navigate, setLoading) => {
     });
 };
 
-// Get User Items
+// Get Items
 export const getUserItems = (setItems, setLoading) => {
   axios
-    .post("https://dev.avidrise.co.in/items/get-user-items", { user_id: getUserId() })
+    .post(apiBaseUrl("/items/get-user-items"), { user_id: getUserId() })
     .then((res) => {
       const activeItems = res.data.data.filter(
         (item) => item.status === "active"
@@ -188,9 +189,9 @@ export const deleteItem = (item_id, setItems) => {
   showConfirm().then((result) => {
     if (result.isConfirmed) {
       axios
-        .post("https://dev.avidrise.co.in/items/add-update", {
+        .post(apiBaseUrl("/items/add-update"), {
           user_id: getUserId(),
-          item_id: item_id,
+          item_id,
           status: "inactive",
         })
         .then(() => {
@@ -208,7 +209,7 @@ export const deleteItem = (item_id, setItems) => {
 export const loginUser = (email, password, setLoading, setAlert, navigate) => {
   setLoading(true);
   axios
-    .post("https://dev.avidrise.co.in/user/login", { email, password })
+    .post(apiBaseUrl("/user/login"), { email, password })
     .then((res) => {
       const { accessToken, refreshToken } = res.data.data.tokenData;
       const userId = res.data.data.user_id;
@@ -235,7 +236,7 @@ export const loginUser = (email, password, setLoading, setAlert, navigate) => {
 // Register User
 export const registerUser = (data, setAlert, navigate, setLoading) => {
   axios
-    .post("https://dev.avidrise.co.in/user/signup", data)
+    .post(apiBaseUrl("/user/signup"), data)
     .then((res) => {
       Cookies.set("access_token", res.data.data.accessToken, { expires: 7 });
       Cookies.set("refresh_token", res.data.data.refreshToken, { expires: 7 });
@@ -260,7 +261,7 @@ export const registerUser = (data, setAlert, navigate, setLoading) => {
 // Reset Password
 export const resetPassword = (data, setAlert, navigate, setLoading) => {
   axios
-    .post("https://dev.avidrise.co.in/user/reset-password", data)
+    .post(apiBaseUrl("/user/reset-password"), data)
     .then((res) => {
       setAlert({ type: "success", message: res.data.msg });
       setTimeout(() => {
@@ -278,4 +279,34 @@ export const resetPassword = (data, setAlert, navigate, setLoading) => {
     });
 };
 
-// upload file
+// Upload logo
+export const uploadFile = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await axios.post(apiBaseUrl("/user/upload-file"), formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data.data.file_url;
+};
+
+// Upload Signature
+export const uploadBlobFile = async (blob, filename = "file.png") => {
+  const formData = new FormData();
+  formData.append("file", blob, filename);
+
+  const response = await fetch(apiBaseUrl("/user/upload-file"), {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to upload file");
+  }
+
+  const result = await response.json();
+  return result?.data?.file_url;
+};

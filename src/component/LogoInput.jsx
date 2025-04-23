@@ -1,11 +1,11 @@
 import React, { useState, useRef } from "react";
-import axios from "axios";
 import FileUploadModal from "./FileUploadModal";
+import { uploadFile } from "./ApiFunction";
 
 export default function LogoInput({ onUploadSuccess, preview }) {
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState(null);
-  const [statePreview, setStatePreview] = useState(null); 
+  const [statePreview, setStatePreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef();
 
@@ -21,18 +21,12 @@ export default function LogoInput({ onUploadSuccess, preview }) {
     if (!file) return;
     setIsLoading(true);
 
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const response = await axios.post(
-        "/apiUrl/user/upload-file",
-        formData
-      );
+      const fileUrl = await uploadFile(file); // 🔄 Use your new API function
       if (onUploadSuccess) {
-        onUploadSuccess(response.data.data.file_url); // or response, depending on what you want
+        onUploadSuccess(fileUrl);
       }
-      setStatePreview(URL.createObjectURL(file)); // Use the renamed state variable
+      setStatePreview(URL.createObjectURL(file));
       document.getElementById("closeLogoModalBtn").click();
     } catch (error) {
       console.error("Upload failed:", error);
@@ -44,7 +38,7 @@ export default function LogoInput({ onUploadSuccess, preview }) {
   const handleDelete = () => {
     setFile(null);
     setFileName("");
-    setStatePreview(null); // Use the renamed state variable
+    setStatePreview(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -61,7 +55,7 @@ export default function LogoInput({ onUploadSuccess, preview }) {
       handleUpload={handleUpload}
       isLoading={isLoading}
       buttonLabel="Logo"
-      preview={statePreview || preview} // Pass statePreview first, then fall back to prop preview
+      preview={statePreview || preview}
       accept="image/*"
       fileInputRef={fileInputRef}
       handleDelete={handleDelete}

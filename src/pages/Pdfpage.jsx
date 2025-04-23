@@ -1,71 +1,3 @@
-// import { useLocation, useNavigate } from "react-router-dom";
-// import { useEffect, useState } from "react";
-// import { usePDF } from "react-to-pdf";
-// import InvoicePdf from "../component/InvoicePdf";
-
-// const Pdfpage = () => {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   const [invoiceData, setInvoiceData] = useState(null);
-//   const { toPDF, targetRef } = usePDF({ filename: "invoice.pdf" });
-
-//   useEffect(() => {
-//     if (location.state) {
-//       setInvoiceData(location.state);
-//     }
-//   }, [location.state]);
-
-//   const editPdf = (data) => {
-//     navigate("/invoice/new-invoice", { state: data });
-//   };
-
-//   if (!invoiceData) return <p>Loading invoice...</p>;
-
-//   return (
-//     <div className="container mt-4">
-
-//       <div className="row">
-//       <div
-//               className="col-md-12  position-sticky top-0 z-3 py-2 d-flex justify-content-between"
-//               style={{ backgroundColor: "whitesmoke" }}
-//             >
-//                 <div
-//                   className="btn-group"
-//                   role="group"
-//                   aria-label="Basic outlined example"
-//                 >
-
-//                   <button
-//                     type="button"
-//                     className="btn btn-outline-secondary active border-start"
-//                     onClick={() => editPdf(invoiceData)}
-//                   >
-//                     Edit
-//                   </button>
-//                 </div>
-
-//                 <button
-//                   type="button"
-//                   className={`btn btn-outline-secondary active border-start `}
-//                   onClick={toPDF}
-//                 >
-//                   Download PDF
-//                 </button>
-
-//             </div>
-//             <div ref={targetRef} className="d-flex justify-content-center z-1">
-//         <InvoicePdf formData={invoiceData} />
-//       </div>
-//       <InvoicePdf formData={invoiceData} />
-//       </div>
-//       {/* Use your new component with ref */}
-
-//     </div>
-//   );
-// };
-
-// export default Pdfpage;
-
 import {
   Page,
   Text,
@@ -145,130 +77,110 @@ const InvoicePDF = ({
   logo,
   invoiceData,
 }) => {
-  const [signatureBase64, setSignatureBase64] = useState(null);
 
-  useEffect(() => {
-    const imageUrl = invoiceData?.signature_url;
-  
-    if (!imageUrl) return;
-  
-    fetch(imageUrl)
-      .then((res) => res.blob())
-      .then((blob) => {
-        const reader = new FileReader();
-        reader.onloadend = () => setSignatureBase64(reader.result); // base64 string
-        reader.readAsDataURL(blob);
-      })
-      .catch((err) => {
-        console.error("Failed to load image for PDF:", err);
-      });
-  }, [invoiceData?.signature_url]);
-  
+  const logoUrl = invoiceData?.logo;
 
-  return(
-<Document>
-
-
-    <Page size="A4" style={styles.page}>
-      <View style={styles.header}>
-        <Text style={styles.bold}>{invoiceName}</Text>
-        <View>
-          <Text>Invoice No: {invoiceNumber}</Text>
-          <Text>Date: {new Date(date).toLocaleDateString("en-GB")}</Text>
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.header}>
+          <Text style={styles.bold}>{invoiceName}</Text>
+          <View>
+            <Text>Invoice No: {invoiceNumber}</Text>
+            <Text>Date: {new Date(date).toLocaleDateString("en-GB")}</Text>
+          </View>
         </View>
-      </View>
 
-      <View style={styles.section}>
-        <Text style={styles.bold}>From:</Text>
-        {/* <Image src="https://innovartan.s3.amazonaws.com/7281791d35eb0b61e2cebee9b48259f019171980/bef2ee2d4d8dce4e516d24deea18cb3e.png" style={{ width: 100, height: 50 }} /> */}
-        <Image src={invoiceData?.signature_url} style={{ width: 100, height: 50 }} />
-        <Text>{businessAddress}</Text>
-        <Text>{businessEmail}</Text>
-        <Text>
-          {businessPhone}, {businessNumber}
-        </Text>
-      </View>
-
-      {billName && (
         <View style={styles.section}>
-          <Text style={styles.bold}>Bill To:</Text>
-          <Text>{billName}</Text>
-          <Text>{billAddress}</Text>
-          <Text>{billEmail}</Text>
-          <Text>{billMobile}</Text>
+          <Text style={styles.bold}>From:</Text>
+          <Image src={logoUrl} style={{ width: 100, height: 50 }} />
+          <Text>{businessAddress}</Text>
+          <Text>{businessEmail}</Text>
+          <Text>
+            {businessPhone}, {businessNumber}
+          </Text>
         </View>
-      )}
 
-      <View style={styles.section}>
-        <View style={styles.tableHeader}>
-          <Text style={[styles.col, styles.bold]}>Item Name</Text>
-          <Text style={[styles.col, styles.bold]}>Description</Text>
-          <Text style={[styles.col, styles.bold]}>HSN Code</Text>
-          <Text style={[styles.col, styles.bold]}>Rate</Text>
-          <Text style={[styles.col, styles.bold]}>Qty</Text>
-          <Text style={[styles.col, styles.bold]}>Amount</Text>
+        {billName && (
+          <View style={styles.section}>
+            <Text style={styles.bold}>Bill To:</Text>
+            <Text>{billName}</Text>
+            <Text>{billAddress}</Text>
+            <Text>{billEmail}</Text>
+            <Text>{billMobile}</Text>
+          </View>
+        )}
+
+        <View style={styles.section}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.col, styles.bold]}>Item Name</Text>
+            <Text style={[styles.col, styles.bold]}>Description</Text>
+            <Text style={[styles.col, styles.bold]}>HSN Code</Text>
+            <Text style={[styles.col, styles.bold]}>Rate</Text>
+            <Text style={[styles.col, styles.bold]}>Qty</Text>
+            <Text style={[styles.col, styles.bold]}>Amount</Text>
+          </View>
+          {items?.length > 0 ? (
+            items.map((item, index) => (
+              <View style={styles.row} key={index}>
+                <Text style={styles.col}>{item.select}</Text>
+                <Text style={styles.col}>{item.details}</Text>
+                <Text style={styles.col}>{item.hsncode}</Text>
+                <Text style={styles.col}>{item.rate}</Text>
+                <Text style={styles.col}>{item.quantity}</Text>
+                <Text style={styles.col}>₹{item.total}</Text>
+              </View>
+            ))
+          ) : (
+            <Text>No items added</Text>
+          )}
         </View>
-        {items?.length > 0 ? (
-          items.map((item, index) => (
-            <View style={styles.row} key={index}>
-              <Text style={styles.col}>{item.select}</Text>
-              <Text style={styles.col}>{item.details}</Text>
-              <Text style={styles.col}>{item.hsncode}</Text>
-              <Text style={styles.col}>{item.rate}</Text>
-              <Text style={styles.col}>{item.quantity}</Text>
-              <Text style={styles.col}>₹{item.total}</Text>
+
+        <View style={styles.section}>
+          <View style={styles.total}>
+            <Text>Subtotal</Text>
+            <Text>₹{subtotal}</Text>
+          </View>
+          {discountLabel && (
+            <View style={styles.total}>
+              <Text>{discountLabel}</Text>
+              <Text>- ₹{parseFloat(discountTotal || 0).toFixed(2)}</Text>
             </View>
-          ))
-        ) : (
-          <Text>No items added</Text>
-        )}
-      </View>
+          )}
+          {cgstLabel && (
+            <View style={styles.total}>
+              <Text>{cgstLabel}</Text>
+              <Text>₹{cgstTax}</Text>
+            </View>
+          )}
+          {taxLabelWithPercentage && (
+            <View style={styles.total}>
+              <Text>{taxLabelWithPercentage}</Text>
+              <Text>₹{calculatedTaxValue}</Text>
+            </View>
+          )}
+          {sgstLabel && (
+            <View style={styles.total}>
+              <Text>{sgstLabel}</Text>
+              <Text>₹{sgstTax}</Text>
+            </View>
+          )}
+          <View style={styles.total}>
+            <Text style={styles.bold}>Grand Total</Text>
+            <Text style={styles.bold}>₹{calculatedTotal}</Text>
+          </View>
+        </View>
 
-      <View style={styles.section}>
-        <View style={styles.total}>
-          <Text>Subtotal</Text>
-          <Text>₹{subtotal}</Text>
-        </View>
-        {discountLabel && (
-          <View style={styles.total}>
-            <Text>{discountLabel}</Text>
-            <Text>- ₹{parseFloat(discountTotal || 0).toFixed(2)}</Text>
+        {additionalDetails && (
+          <View style={styles.section}>
+            <Text style={styles.bold}>Notes:</Text>
+            <Text>{additionalDetails}</Text>
           </View>
         )}
-        {cgstLabel && (
-          <View style={styles.total}>
-            <Text>{cgstLabel}</Text>
-            <Text>₹{cgstTax}</Text>
-          </View>
-        )}
-        {taxLabelWithPercentage && (
-          <View style={styles.total}>
-            <Text>{taxLabelWithPercentage}</Text>
-            <Text>₹{calculatedTaxValue}</Text>
-          </View>
-        )}
-        {sgstLabel && (
-          <View style={styles.total}>
-            <Text>{sgstLabel}</Text>
-            <Text>₹{sgstTax}</Text>
-          </View>
-        )}
-        <View style={styles.total}>
-          <Text style={styles.bold}>Grand Total</Text>
-          <Text style={styles.bold}>₹{calculatedTotal}</Text>
-        </View>
-      </View>
-
-      {additionalDetails && (
-        <View style={styles.section}>
-          <Text style={styles.bold}>Notes:</Text>
-          <Text>{additionalDetails}</Text>
-        </View>
-      )}
-    </Page>
-  </Document>
+      </Page>
+    </Document>
   );
-  
+
 };
 
 // Final Component

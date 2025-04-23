@@ -1,15 +1,14 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    proxy: {
-      '/apiUrl': {
-        target: 'https://dev.avidrise.co.in',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/apiUrl/, ''),
-      },
+  define: {
+    "process.env": {
+      API_URL: 'https://dev.avidrise.co.in',
     },
   },
-});
+})
+
+

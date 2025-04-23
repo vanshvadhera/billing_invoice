@@ -1,7 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
+import { uploadBlobFile } from "./ApiFunction";
 
-export default function SignatureCanvas({onUploadSuccess ,preview}) {
+export default function SignatureCanvas({ onUploadSuccess, preview }) {
   const canvasRef = useRef();
   const [signature, setSignature] = useState(null);
   const [isCanvasEmpty, setIsCanvasEmpty] = useState(true);
@@ -14,28 +15,16 @@ export default function SignatureCanvas({onUploadSuccess ,preview}) {
       const res = await fetch(base64);
       const blob = await res.blob();
 
-      const formData = new FormData();
-      formData.append("file", blob, "signature.png");
+      const fileUrl = await uploadBlobFile(blob, "signature.png");
 
-      const response = await fetch(
-        "/apiUrl/user/upload-file",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (response.ok) {
-        const result = await response.json(); 
-
-        if (onUploadSuccess && result?.data?.file_url) {
-          onUploadSuccess(result.data.file_url); 
-        }
-        setSignature(URL.createObjectURL(blob));
-        canvasRef.current.clearCanvas();
-        setIsCanvasEmpty(true);
-        document.getElementById("closeSignatureModalBtn").click();
+      if (onUploadSuccess) {
+        onUploadSuccess(fileUrl);
       }
+
+      setSignature(URL.createObjectURL(blob));
+      canvasRef.current.clearCanvas();
+      setIsCanvasEmpty(true);
+      document.getElementById("closeSignatureModalBtn").click();
     } catch (err) {
       console.error("Signature upload failed:", err);
     } finally {
@@ -43,12 +32,10 @@ export default function SignatureCanvas({onUploadSuccess ,preview}) {
     }
   };
 
-  // Monitor canvas changes
   const handleStroke = () => {
     setIsCanvasEmpty(false);
   };
 
-  // Clear canvas when modal is closed
   useEffect(() => {
     const modalEl = document.getElementById("signatureModal");
 
@@ -60,10 +47,7 @@ export default function SignatureCanvas({onUploadSuccess ,preview}) {
     };
 
     modalEl?.addEventListener("hidden.bs.modal", onClose);
-
-    return () => {
-      modalEl?.removeEventListener("hidden.bs.modal", onClose);
-    };
+    return () => modalEl?.removeEventListener("hidden.bs.modal", onClose);
   }, []);
 
   return (

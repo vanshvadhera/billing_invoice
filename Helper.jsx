@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
+// import config from "./config";
 
 export const isAuthenticated = () => {
   return !!Cookies.get("access_token");
@@ -41,3 +42,13 @@ export const showConfirm = (title = "Are you sure?") => {
     confirmButtonText: "Yes, delete it!",
   });
 };
+
+// export function apiBaseUrl(url = "") {
+//   const base = config.API_URL.replace(/\/$/, ""); // remove trailing slash
+//   const path = url.replace(/^\//, ""); // remove leading slash
+//   return `${base}/${path}`;
+// }
+
+export function apiBaseUrl(url) {
+	return url ? process.env.API_URL + url : process.env.API_URL;
+}
