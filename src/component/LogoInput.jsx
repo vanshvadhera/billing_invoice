@@ -22,7 +22,7 @@ export default function LogoInput({ onUploadSuccess, preview }) {
     setIsLoading(true);
 
     try {
-      const fileUrl = await uploadFile(file); // 🔄 Use your new API function
+      const fileUrl = await uploadFile(file); 
       if (onUploadSuccess) {
         onUploadSuccess(fileUrl);
       }

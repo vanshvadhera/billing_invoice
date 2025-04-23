@@ -78,7 +78,7 @@ const InvoicePDF = ({
   invoiceData,
 }) => {
 
-  const logoUrl = invoiceData?.logo;
+  const logoUrl = logo || invoiceData?.logo
 
   return (
     <Document>

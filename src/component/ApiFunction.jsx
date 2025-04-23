@@ -155,16 +155,16 @@ export const addOrUpdateItem = (itemData, navigate, setLoading) => {
   axios
     .post(apiBaseUrl("/items/add-update"), itemData)
     .then(() => {
+      setLoading(false);
       showSuccess("Item has been saved successfully");
       navigate("/items");
     })
     .catch(() => {
-      showError("Failed to save the item");
-    })
-    .finally(() => {
       setLoading(false);
+      showError("Failed to save the item");
     });
 };
+
 
 // Get Items
 export const getUserItems = (setItems, setLoading) => {

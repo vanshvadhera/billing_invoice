@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { getUserItems } from "./ApiFunction";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
+import ItemFormModal from "./ItemFormModal";
 
 const ItemRow = ({
   onDataChange,
@@ -28,17 +29,26 @@ const ItemRow = ({
   ]);
 
   const [showItemModal, setShowItemModal] = useState(false);
-  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
+
+  const fetchItems = () => getUserItems(setItems, setLoading);
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const closeModal = () => {
+    setShowItemModal(false);
+  };
+
+  const successItemApi = fetchItems;
 
   const grandTotal = useMemo(() => {
     return itemRow.reduce((acc, row) => acc + row.total, 0).toFixed(2);
   }, [itemRow]);
-
-  useEffect(() => {
-    getUserItems(setItems, setLoading);
-  }, []);
 
   useEffect(() => {
     if (editData?.items?.length && items.length) {
@@ -141,7 +151,6 @@ const ItemRow = ({
   const handleItemSelect = (id, selectedOption) => {
     if (selectedOption.value === "new-item") {
       setShowItemModal(true);
-      return;
     }
 
     const { item } = selectedOption;
@@ -186,6 +195,13 @@ const ItemRow = ({
 
   return (
     <>
+        <ItemFormModal
+        showItemModal={showItemModal}
+        closeModal={closeModal}
+        onSuccess={fetchItems}
+      />
+
+      {/* Desktop View */}
       <div className="row d-none d-md-block d-lg-block">
         <table className="table mb-0">
           <thead className="border-top border-bottom border-dark">
@@ -215,7 +231,6 @@ const ItemRow = ({
                     value={row.selectedOption || null}
                     placeholder="Select Item"
                   />
-
                   <input
                     type="hidden"
                     name={`Itemselect[${index}]`}
@@ -305,6 +320,7 @@ const ItemRow = ({
           key={index}
           className="d-block d-md-none d-lg-none border p-2 mb-2 rounded"
         >
+          {/* Item selection and inputs */}
           <div className="mb-2">
             <Select
               options={itemOptions}
