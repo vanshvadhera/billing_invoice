@@ -37,34 +37,37 @@ export default function UseItemForm({ existingItem, onSuccess, navigate, closeMo
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-const handleSubmit = (e) => {
-  e.preventDefault();
-  setLoading(true);
 
-  const itemData = {
-    user_id: Cookies.get("user_id"),
-    status: "active",
-    ...formData,
+  const handleSubmit = (e) => {
+    console.log("Form Data:", formData);
+
+    e.preventDefault();
+    setLoading(true);
+
+    const itemData = {
+      user_id: Cookies.get("user_id"),
+      status: "active",
+      ...formData,
+    };
+
+    addOrUpdateItem(
+      itemData,
+      () => {
+        setLoading(false);
+        Swal.fire("Success", `Item ${existingItem ? "updated" : "added"} successfully!`, "success");
+        onSuccess?.(); // Assuming onSuccess is passed correctly
+        resetForm();
+        closeModal?.();
+        navigate?.("/items");
+      },
+      () => {
+        setLoading(false);
+        Swal.fire("Error", "Failed to save item", "error");
+      }
+    );
   };
 
-  addOrUpdateItem(
-    itemData,
-    () => {
-      setLoading(false);
-      Swal.fire("Success", `Item ${existingItem ? "updated" : "added"} successfully!`, "success");
-      onSuccess?.(); // Assuming onSuccess is passed correctly
-      resetForm();
-      closeModal?.();
-      navigate?.("/items");
-    },
-    () => {
-      setLoading(false);
-      Swal.fire("Error", "Failed to save item", "error");
-    }
-  );
-};
 
-  
 
   return {
     formData,

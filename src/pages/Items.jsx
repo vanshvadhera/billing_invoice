@@ -2,23 +2,29 @@ import { Link, useNavigate } from "react-router-dom";
 import CreateInvoiceCard from "../component/CreateInvoiceCard";
 import { useEffect, useState } from "react";
 import { getUserItems, deleteItem } from "../component/ApiFunction";
+import CustomModal from "../component/CustomModal";
+import NewInvoice from "./NewInvoice";
+import CreateItem from "./client/CreateItem";
 
 export default function Items() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [createItemModal, setCreateItemModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     getUserItems(setItems, setLoading);
   }, []);
 
+  console.log(items);
+
+
   return (
     <div className="container">
       <div className="card my-4 border-0 previous-invoice w-100">
         <div
-          className={`card-header d-flex justify-content-between flex-lg-row flex-md-row flex-column align-items-center border-0 bg-white gap-3 ${
-            loading ? "border-bottom border-1" : ""
-          }`}
+          className={`card-header d-flex justify-content-between flex-lg-row flex-md-row flex-column align-items-center border-0 bg-white gap-3 ${loading ? "border-bottom border-1" : ""
+            }`}
         >
           <div>
             <i className="fas fa-table me-1"></i> Items
@@ -32,10 +38,10 @@ export default function Items() {
               />
               <i className="fa fa-search px-3"></i>
             </div>
-            <Link to="/item/new" className="btn new-invoice-btn ms-2 ">
+            <div className="btn new-invoice-btn ms-2" onClick={() => setCreateItemModal(true)} >
               <span className="">New Item</span>
               {/* <i className="fa fa-plus d-lg-none d-md-none d-block"></i> */}
-            </Link>
+            </div>
           </div>
         </div>
 
@@ -61,7 +67,7 @@ export default function Items() {
                 <thead className="border-bottom">
                   <tr style={{ fontSize: "0.8rem" }} className="table-head">
                     <th>Item Name</th>
-                    <th>Item Category</th>
+                    {/* <th>Item Category</th> */}
                     <th>Item Code</th>
                     <th>Item Price</th>
                     <th>Item Quantity</th>
@@ -77,11 +83,11 @@ export default function Items() {
                       key={item._id}
                     >
                       <td>{item.item_name}</td>
-                      <td>{item.item_category}</td>
+                      {/* <td>{item.item_category}</td> */}
                       <td>{item.item_code}</td>
-                      <td>{item.item_price}</td>
-                      <td>{item.item_quantity}</td>
-                      <td>{item.unit_measurement}</td>
+                      <td>{item.price}</td>
+                      <td>{item.unit}</td>
+                      <td>{item.unit_measure}</td>
                       <td>
                         <div className="d-flex justify-content-center gap-3 align-items-center position-relative">
                           <button
@@ -106,6 +112,12 @@ export default function Items() {
           </div>
         )}
       </div>
+      <CustomModal
+        isOpen={createItemModal}
+        onClose={() => setCreateItemModal(false)}
+      >
+        <CreateItem />
+      </CustomModal>
     </div>
   );
 }

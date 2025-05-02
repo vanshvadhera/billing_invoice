@@ -20,7 +20,6 @@ export default function NewInvoice() {
   const [isDiscountApplicable, setIsDiscountApplicable] = useState(false);
   const [currentDate, setCurrentDate] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
-  const [tax, setTax] = useState("0.00");
   const navigate = useNavigate();
   const location = useLocation();
   const [clients, setClients] = useState([]);
@@ -93,11 +92,6 @@ export default function NewInvoice() {
       console.log(editData.date);
       setAdditionalNotes(editData.additionalDetails || "");
       setSelectedOptionTax(editData.selectedOptionTax || "");
-      if (editData.selectedOptionTax === "CGST_SGST") {
-        console.log("Setting tax to 180");
-        setTaxpercentage(18);
-        setTax(editData?.cgstTax)
-      }
     } else {
       const today = new Date().toISOString().split("T")[0];
       setCurrentDate(today);

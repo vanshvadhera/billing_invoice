@@ -24,6 +24,7 @@ import ClientForm from "./pages/client/ClientForm";
 import PrivateRoute from "./component/PrivateRoute";
 import Pdfpage from "./pages/Pdfpage";
 import Report from "./pages/Report";
+import CreateItem from "./pages/client/CreateItem";
 
 // Utility function
 const isAuthenticated = () => {

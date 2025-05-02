@@ -8,8 +8,6 @@ export default function Clients() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Fetch clients data from API
-
   useEffect(() => {
     getClients(setClients, setLoading);
   }, []);
@@ -18,9 +16,8 @@ export default function Clients() {
     <div className="container">
       <div className="card my-4 border-0 previous-invoice w-100">
         <div
-          className={`card-header d-flex justify-content-between flex-lg-row flex-md-row flex-column align-items-center border-0 bg-white gap-3 ${
-            loading ? "border-bottom border-1" : ""
-          }`}
+          className={`card-header d-flex justify-content-between flex-lg-row flex-md-row flex-column align-items-center border-0 bg-white gap-3 ${loading ? "border-bottom border-1" : ""
+            }`}
         >
           <div>
             <i className="fas fa-table me-1"></i> Clients

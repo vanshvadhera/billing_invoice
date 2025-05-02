@@ -61,10 +61,10 @@ const ItemRow = ({
           selectedItemName: item.select,
           selectedOption: matchingItem
             ? {
-                value: matchingItem.item_id,
-                label: matchingItem.item_name,
-                item: matchingItem,
-              }
+              value: matchingItem.item_id,
+              label: matchingItem.item_name,
+              item: matchingItem,
+            }
             : null,
           description: item.select || "",
           details: item.details || "",
@@ -127,14 +127,14 @@ const ItemRow = ({
       prev.map((row) =>
         row.id === id
           ? {
-              ...row,
-              [field]: value,
-              total:
-                field === "rate" || field === "quantity"
-                  ? (field === "rate" ? value : row.rate) *
-                    (field === "quantity" ? value : row.quantity)
-                  : row.total,
-            }
+            ...row,
+            [field]: value,
+            total:
+              field === "rate" || field === "quantity"
+                ? (field === "rate" ? value : row.rate) *
+                (field === "quantity" ? value : row.quantity)
+                : row.total,
+          }
           : row
       )
     );
@@ -159,17 +159,17 @@ const ItemRow = ({
       prev.map((row) =>
         row.id === id
           ? {
-              ...row,
-              selectedOption,
-              selectedItemId: selectedOption.value,
-              selectedItemName: selectedOption.label,
-              description: item?.item_name || "",
-              details: item?.item_category || "",
-              hsnCode: item?.item_code || "",
-              rate: parseFloat(item?.item_price) || 0,
-              quantity: 1,
-              total: parseFloat(item?.item_price) || 0,
-            }
+            ...row,
+            selectedOption,
+            selectedItemId: selectedOption.value,
+            selectedItemName: selectedOption.label,
+            description: item?.item_name || "",
+            details: item?.item_category || "",
+            hsnCode: item?.item_code || "",
+            rate: parseFloat(item?.item_price) || 0,
+            quantity: 1,
+            total: parseFloat(item?.item_price) || 0,
+          }
           : row
       )
     );
@@ -195,7 +195,7 @@ const ItemRow = ({
 
   return (
     <>
-        <ItemFormModal
+      <ItemFormModal
         showItemModal={showItemModal}
         closeModal={closeModal}
         onSuccess={fetchItems}
