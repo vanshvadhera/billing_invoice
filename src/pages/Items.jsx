@@ -10,14 +10,24 @@ export default function Items() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [createItemModal, setCreateItemModal] = useState(false);
+  const [dataForEdit, setDataForEdit] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchUserItems = () => {
     getUserItems(setItems, setLoading);
+  }
+
+  const editItem = (item) => {
+    setDataForEdit(item);
+    setTimeout(() => setCreateItemModal(true), 100);
+  }
+
+  useEffect(() => {
+    fetchUserItems();
   }, []);
 
-  console.log(items);
-
+  console.log("Items:", items);
+  
 
   return (
     <div className="container">
@@ -93,9 +103,7 @@ export default function Items() {
                           <button
                             className="btn btn-primary btn-sm fa-regular fa-pen-to-square rounded-circle py-2"
                             onClick={() =>
-                              navigate(`/item/edit`, {
-                                state: { item },
-                              })
+                              editItem(item)
                             }
                           ></button>
                           <button
@@ -116,7 +124,7 @@ export default function Items() {
         isOpen={createItemModal}
         onClose={() => setCreateItemModal(false)}
       >
-        <CreateItem />
+        <CreateItem onClose={() => setCreateItemModal(false)} fetchUserItems={fetchUserItems} existingItem={dataForEdit} location={"items"} />
       </CustomModal>
     </div>
   );

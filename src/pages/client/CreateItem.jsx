@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 import ItemFormInputs from "../../component/ItemFormInputs";
 import { addOrUpdateItem } from "../../component/ApiFunction";
 
-export default function CreateItem() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const existingItem = location.state?.item || null;
+export default function CreateItem({ onClose, fetchUserItems, existingItem, location, handleAddNewItem }) {
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -26,7 +22,7 @@ export default function CreateItem() {
         item_name: existingItem.item_name || "",
         item_code: existingItem.item_code || "",
         unit: existingItem.unit || "",
-        tax_rate: existingItem.tax_rate || "",
+        unit_measure: existingItem.unit_measure || "",
         price: existingItem.price || "",
         item_id: existingItem.item_id || "",
       });
@@ -52,11 +48,18 @@ export default function CreateItem() {
       itemData,
       () => {
         setLoading(false);
+        onClose();
         Swal.fire(
           "Success",
           `Item ${existingItem ? "updated" : "added"} successfully!`,
           "success"
         );
+        if (location === "items") {
+          fetchUserItems();
+        }
+        if (location === "invoice") {
+          handleAddNewItem(itemData);
+        }
         setFormData({
           item_name: "",
           item_code: "",
@@ -64,7 +67,6 @@ export default function CreateItem() {
           tax_rate: "",
           price: "",
         });
-        navigate("/items");
       },
       () => {
         setLoading(false);
@@ -73,25 +75,9 @@ export default function CreateItem() {
     );
   };
 
-  const handleClose = () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "Any unsaved changes will be lost!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, Close",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate("/items");
-      }
-    });
-  };
-
   return (
-    <div className="w-50vw">
-      <div>
+    <div className="w-[30vw]">
+      <div className="mb-2" >
         <i className="fas fa-table me-1"></i>
         {existingItem ? "Edit Item" : "New Item"}
       </div>
@@ -100,7 +86,7 @@ export default function CreateItem() {
         formData={formData}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
-        handleClose={handleClose}
+        handleClose={onClose}
         loading={loading}
         isEditMode={!!existingItem}
       />

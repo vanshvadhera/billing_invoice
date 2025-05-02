@@ -144,12 +144,7 @@ export default function NewInvoice() {
 
   const handleSelectChangeTax = (e) => {
     const value = e.target.value;
-    setSelectedOptionTax(value);
-
-    if (value === "CGST_SGST") {
-      setTaxpercentage(18);
-    }
-
+    setSelectedOptionTax(value)
     setIsTaxApplicable(value === "CGST_SGST" || value === "other");
   };
 
@@ -431,7 +426,7 @@ export default function NewInvoice() {
                           value={currentDate}
                           onChange={(e) => setCurrentDate(e.target.value)}
                           name="date"
-                          className="py-2 px-2 border border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                          className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                         />
                       </div>
                     </div>
@@ -586,7 +581,7 @@ export default function NewInvoice() {
                                     (parseFloat(taxpercentage) / 2)) /
                                   100
                                 )} */}
-                                {tax}
+                                {/* {tax} */}
 
                                 <input
                                   type="hidden"
@@ -719,7 +714,7 @@ export default function NewInvoice() {
                   </div>
                   <textarea
                     name="additionalDetails"
-                    className="py-2 px-2 border border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100 mt-2 resize-none"
+                    className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100 mt-2 resize-none"
                     placeholder="Notes - any relevant information not covered, additional terms and conditions"
                     rows="6"
                     value={additionalNotes}
@@ -743,7 +738,7 @@ export default function NewInvoice() {
 
             <div className="col-md-3 ">
               {/* Tax Section */}
-              <p className="fs-o8 border-1 border-bottom border-dark mt-2">
+              <p className="fs-o8 border-bottom border-dark mt-2">
                 Tax
               </p>
 
@@ -758,7 +753,7 @@ export default function NewInvoice() {
                     id="optionSelect"
                     value={selectedOptionTax}
                     onChange={handleSelectChangeTax}
-                    className="py-2 px-2 border border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                    className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                   >
                     <option value="none">None</option>
                     <option value="CGST_SGST">CGST & SGST</option>
@@ -781,7 +776,7 @@ export default function NewInvoice() {
                         name="taxLabel"
                         onChange={handleTaxLableChange}
                         placeholder="Tax"
-                        className="py-2 px-2 border border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                        className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                       />
                     </div>
                   </div>
@@ -798,7 +793,7 @@ export default function NewInvoice() {
                         onChange={handleTaxpercentage}
                         placeholder="0.000%"
                         onFocus={handleFocus}
-                        className="py-2 px-2 border border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                        className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                       />
                     </div>
                   </div>
@@ -806,7 +801,7 @@ export default function NewInvoice() {
               )}
 
               {/* Discount Section */}
-              <p className="fs-o8 border-1 border-bottom border-dark mt-4">
+              <p className="fs-o8 border-bottom border-dark mt-4">
                 Discount
               </p>
 
@@ -818,7 +813,7 @@ export default function NewInvoice() {
                   <select
                     value={selectedOptionDiscount}
                     onChange={handleSelectChangeDicount}
-                    className="py-2 px-2 border border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                    className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                   >
                     <option value="none">None</option>
                     <option value="percent">Percent</option>
@@ -839,7 +834,7 @@ export default function NewInvoice() {
                       name="discountPercentage"
                       onChange={handleDiscountpercentage}
                       placeholder="0.000%"
-                      className="py-2 px-2 border border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                      className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                     />
                   </div>
                 </div>
@@ -857,7 +852,7 @@ export default function NewInvoice() {
                       name="discountFlat"
                       onChange={handleDiscountAmountPercentage}
                       placeholder="0.00"
-                      className="py-2 px-2 border border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                      className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                     />
                   </div>
                 </div>
@@ -866,6 +861,7 @@ export default function NewInvoice() {
           </div>
         </>
       )}
+
     </div>
   );
 }

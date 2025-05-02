@@ -3,6 +3,8 @@ import { getUserItems } from "./ApiFunction";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import ItemFormModal from "./ItemFormModal";
+import CustomModal from "./CustomModal";
+import CreateItem from "../pages/client/CreateItem";
 
 const ItemRow = ({
   onDataChange,
@@ -13,6 +15,7 @@ const ItemRow = ({
   setTotalTax,
   editData,
 }) => {
+
   const [itemRow, setItemRow] = useState([
     {
       id: 1,
@@ -31,6 +34,7 @@ const ItemRow = ({
   const [showItemModal, setShowItemModal] = useState(false);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [createItemModal, setCreateItemModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -124,21 +128,28 @@ const ItemRow = ({
 
   const handleInputChange = (id, field, value) => {
     setItemRow((prev) =>
-      prev.map((row) =>
-        row.id === id
-          ? {
-            ...row,
-            [field]: value,
-            total:
-              field === "rate" || field === "quantity"
-                ? (field === "rate" ? value : row.rate) *
-                (field === "quantity" ? value : row.quantity)
-                : row.total,
-          }
-          : row
-      )
+      prev.map((row) => {
+        if (row.id !== id) return row;
+
+        const updatedRow = {
+          ...row,
+          [field]: value,
+        };
+
+        const rate = parseFloat(
+          field === "rate" ? value : row.rate
+        ) || 0;
+        const quantity = parseFloat(
+          field === "quantity" ? value : row.quantity
+        ) || 0;
+
+        updatedRow.total = rate * quantity;
+
+        return updatedRow;
+      })
     );
   };
+
 
   const handleCheckboxChange = (id) => {
     setItemRow((prev) =>
@@ -150,7 +161,7 @@ const ItemRow = ({
 
   const handleItemSelect = (id, selectedOption) => {
     if (selectedOption.value === "new-item") {
-      setShowItemModal(true);
+      setCreateItemModal(true);
     }
 
     const { item } = selectedOption;
@@ -166,9 +177,9 @@ const ItemRow = ({
             description: item?.item_name || "",
             details: item?.item_category || "",
             hsnCode: item?.item_code || "",
-            rate: parseFloat(item?.item_price) || 0,
+            rate: parseFloat(item?.price) || 0,
             quantity: 1,
-            total: parseFloat(item?.item_price) || 0,
+            total: parseFloat(item?.price) || 0,
           }
           : row
       )
@@ -193,14 +204,40 @@ const ItemRow = ({
     },
   ];
 
+  const handleAddNewItem = (item) => {
+    console.log("New Item Added:", item);
+
+    // Add the item to the list so it's available in the dropdown
+    setItems((prevItems) => [...prevItems, item]);
+
+    // Optionally pre-fill the last empty row with this item
+    const newItemOption = {
+      value: item.item_id,
+      label: item.item_name,
+      item,
+    };
+
+    const newRow = {
+      id: itemRow.length + 1,
+      selectedOption: newItemOption,
+      selectedItemId: item.item_id,
+      selectedItemName: item.item_name,
+      description: item.item_name,
+      details: item.item_category || "",
+      hsnCode: item.item_code || "",
+      rate: parseFloat(item.price) || 0,
+      quantity: 1,
+      total: parseFloat(item.price) || 0,
+      isChecked: false,
+    };
+
+    setItemRow((prevRows) => [newRow, ...prevRows]);
+    setCreateItemModal(false); // Close the modal
+  };
+
+
   return (
     <>
-      <ItemFormModal
-        showItemModal={showItemModal}
-        closeModal={closeModal}
-        onSuccess={fetchItems}
-      />
-
       {/* Desktop View */}
       <div className="row d-none d-md-block d-lg-block">
         <table className="table mb-0">
@@ -265,7 +302,7 @@ const ItemRow = ({
                     className="form-control"
                     name={`Itemrate[${index}]`}
                     placeholder="Price"
-                    value={row.rate}
+                    value={!isNaN(row.rate) ? row.rate : ""}
                     onChange={(e) =>
                       handleInputChange(
                         row.id,
@@ -281,7 +318,7 @@ const ItemRow = ({
                     className="form-control"
                     name={`Itemquantity[${index}]`}
                     placeholder="Qty"
-                    value={row.quantity}
+                    value={isNaN(row.quantity) ? "" : row.quantity}
                     onChange={(e) =>
                       handleInputChange(
                         row.id,
@@ -432,6 +469,12 @@ const ItemRow = ({
           )}
         </div>
       ))}
+      <CustomModal
+        isOpen={createItemModal}
+        onClose={() => setCreateItemModal(false)}
+      >
+        <CreateItem onClose={() => setCreateItemModal(false)} location={"invoice"} handleAddNewItem={handleAddNewItem} />
+      </CustomModal>
     </>
   );
 };
