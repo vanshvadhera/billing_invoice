@@ -23,6 +23,7 @@ import Clients from "./pages/client/Clients";
 import ClientForm from "./pages/client/ClientForm";
 import PrivateRoute from "./component/PrivateRoute";
 import Pdfpage from "./pages/Pdfpage";
+import Report from "./pages/Report";
 
 // Utility function
 const isAuthenticated = () => {
@@ -111,6 +112,10 @@ const App = () => {
         <Route
           path="/profile"
           element={<PrivateRoute element={<Profile />} />}
+        />
+        <Route
+          path="/report"
+          element={<PrivateRoute element={<Report/>} />}
         />
       </Routes>
     </div>

@@ -116,7 +116,7 @@ export default function Header() {
                 </li>
 
                 <li>
-                  <Link>Reports</Link>
+                  <Link to="/report">Reports</Link>
                 </li>
 
                 <li>
@@ -150,7 +150,7 @@ export default function Header() {
               </li>
 
               <li className="nav-item ">
-                <a className="nav-link ">Reports</a>
+                <Link className="nav-link" to="/report">Reports</Link>
               </li>
               <li className="nav-item ">
                 <Link className="nav-link " to="/items">

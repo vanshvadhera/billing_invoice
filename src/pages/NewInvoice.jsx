@@ -19,6 +19,7 @@ export default function NewInvoice() {
   const [isDiscountApplicable, setIsDiscountApplicable] = useState(false);
   const [currentDate, setCurrentDate] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
+  const [tax, setTax] = useState("0.00");
   const navigate = useNavigate();
   const location = useLocation();
   const editData = location.state || null;
@@ -90,10 +91,16 @@ export default function NewInvoice() {
       console.log(editData.date);
       setAdditionalNotes(editData.additionalDetails || "");
       setSelectedOptionTax(editData.selectedOptionTax || "");
+      if (editData.selectedOptionTax === "CGST_SGST") {
+        console.log("Setting tax to 180");
+        setTaxpercentage(18);
+        setTax(editData?.cgstTax)
+      }
     } else {
       const today = new Date().toISOString().split("T")[0];
       setCurrentDate(today);
     }
+
   }, [editData]);
 
   const handleClientSelect = (selectedOption) => {
@@ -276,6 +283,7 @@ export default function NewInvoice() {
     const logoImage = formData.get("logoImage");
     data.logoImageName = logoImage?.name || null;
     data.copyBilling = copyBilling;
+    data.isTaxApplicable = isTaxApplicable;
     return data;
   };
 
@@ -515,7 +523,7 @@ export default function NewInvoice() {
                         <span className="fs-o8 fw-medium">
                           Discount
                           {selectedOptionDiscount === "percent" &&
-                          discountpercentage ? (
+                            discountpercentage ? (
                             <> ({parseFloat(discountpercentage)}%)</>
                           ) : selectedOptionDiscount === "flat amount" &&
                             discountAmountPercentage ? (
@@ -526,15 +534,14 @@ export default function NewInvoice() {
                           <input
                             type="hidden"
                             name="discountLabel"
-                            value={`Discount ${
-                              selectedOptionDiscount === "percent" &&
+                            value={`Discount ${selectedOptionDiscount === "percent" &&
                               discountpercentage
-                                ? `(${parseFloat(discountpercentage)}%)`
-                                : selectedOptionDiscount === "flat amount" &&
-                                  discountAmountPercentage
+                              ? `(${parseFloat(discountpercentage)}%)`
+                              : selectedOptionDiscount === "flat amount" &&
+                                discountAmountPercentage
                                 ? "(Flat Amount)"
                                 : ""
-                            }`}
+                              }`}
                           />
                         </span>
                       </div>
@@ -575,18 +582,19 @@ export default function NewInvoice() {
                             <div className="col-md-2">
                               <span className="fs-o8 fw-medium">
                                 <i className="fa-solid fa-indian-rupee-sign me-1"></i>
-                                {safeToFixed(
+                                {/* {safeToFixed(
                                   ((grandTotal - discountTotal) *
                                     (parseFloat(taxpercentage) / 2)) /
-                                    100
-                                )}
+                                  100
+                                )} */}
+                                {tax}
 
                                 <input
                                   type="hidden"
                                   value={safeToFixed(
                                     ((grandTotal - discountTotal) *
                                       (parseFloat(taxpercentage) / 2)) /
-                                      100
+                                    100
                                   )}
                                   name="cgstTax"
                                 />
@@ -615,7 +623,7 @@ export default function NewInvoice() {
                                 {safeToFixed(
                                   ((grandTotal - discountTotal) *
                                     (parseFloat(taxpercentage) / 2)) /
-                                    100
+                                  100
                                 )}
 
                                 <input
@@ -623,7 +631,7 @@ export default function NewInvoice() {
                                   value={safeToFixed(
                                     ((grandTotal - discountTotal) *
                                       (parseFloat(taxpercentage) / 2)) /
-                                      100
+                                    100
                                   )}
                                   name="sgstTax"
                                 />
@@ -645,14 +653,13 @@ export default function NewInvoice() {
                               {safeToFixed(
                                 ((grandTotal - discountTotal) *
                                   parseFloat(taxpercentage)) /
-                                  100
+                                100
                               )}
 
                               <input
                                 type="hidden"
-                                value={`${taxLabletChange} (${
-                                  taxpercentage || ""
-                                })`}
+                                value={`${taxLabletChange} (${taxpercentage || ""
+                                  })`}
                                 name="taxLabelWithPercentage"
                               />
 
@@ -661,7 +668,7 @@ export default function NewInvoice() {
                                 value={safeToFixed(
                                   ((grandTotal - discountTotal) *
                                     parseFloat(taxpercentage)) /
-                                    100
+                                  100
                                 )}
                                 name="calculatedTaxValue"
                               />
