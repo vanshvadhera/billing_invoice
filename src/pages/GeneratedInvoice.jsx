@@ -53,10 +53,10 @@ export default function GeneratedInvoice() {
   //   calculatedTotal,
   //   signature_url,
   //   additionalDetails,
-    
+
   // } = formData || {};
 
-const generatePdf = () => {
+  const generatePdf = () => {
     const data = formData;
     if (!data) return;
     data.user_id = getUserId();
@@ -64,6 +64,7 @@ const generatePdf = () => {
     console.log("✅ Final Data (JSON):", JSON.stringify(data, null, 2));
     addUpdateInvoice(data, navigate);
   };
+  
   return (
     <div className="container my-5">
       <div className="row mx-2 flex-wrap ">
@@ -348,10 +349,10 @@ const generatePdf = () => {
               </div>
             </div>
           </div> */}
-          <InvoicePdf formData={formData}/>
+          <InvoicePdf formData={formData} />
         </div>
         <div className="col-md-3 mt-lg-0 mt-md-2 mt-3">
-        <p className="fs-o8 border-1 border-bottom border-dark ">
+          <p className="fs-o8 border-1 border-bottom border-dark ">
             PREVIEW VIA EMAIL
           </p>
 
@@ -366,18 +367,16 @@ const generatePdf = () => {
             />
             {emailShare && (
               <i
-                className={`position-absolute exclaimatory-fav  ${
-                  validateEmail(emailShare)
+                className={`position-absolute exclaimatory-fav  ${validateEmail(emailShare)
                     ? "fa-solid fa-circle-check text-success"
                     : "fa-solid fa-circle-exclamation text-danger"
-                }`}
+                  }`}
               ></i>
             )}
 
             <button
-              className={`fs-o8 w-100 bg-secondary text-white py-2 border-0 mt-3 ${
-                validateEmail(emailShare) ? "bg-dark" : "bg-secondary"
-              }`}
+              className={`fs-o8 w-100 bg-secondary text-white py-2 border-0 mt-3 ${validateEmail(emailShare) ? "bg-dark" : "bg-secondary"
+                }`}
               disabled={!validateEmail(emailShare)} // Disable button if email is invalid
             >
               Send

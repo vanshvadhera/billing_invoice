@@ -11,8 +11,9 @@ import BillingShippingSection from "../component/BillingShippingSection";
 import FromBusinessSection from "../component/FromBusinessSection";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getUserId } from "../../Helper";
+
 export default function NewInvoice() {
-  const [invoiceName, setInvoiceName] = useState("invoice");
+  const [invoiceName, setInvoiceName] = useState("New Invoice");
   const [selectedOptionTax, setSelectedOptionTax] = useState("none");
   const [selectedOptionDiscount, setSelectedOptionDiscount] = useState("none");
   const [isTaxApplicable, setIsTaxApplicable] = useState(false);
@@ -22,7 +23,6 @@ export default function NewInvoice() {
   const [tax, setTax] = useState("0.00");
   const navigate = useNavigate();
   const location = useLocation();
-  const editData = location.state || null;
   const [clients, setClients] = useState([]);
   const [selectedClient, setSelectedClient] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -40,6 +40,7 @@ export default function NewInvoice() {
   const [formData, setFormData] = useState({});
   const [isShipTo, setIsShipTo] = useState(false);
   const [copyBilling, setCopyBilling] = useState("yes");
+  const editData = location.state || null;
 
   const [shipToFields, setShipToFields] = useState({
     shipToName: "",
@@ -49,6 +50,7 @@ export default function NewInvoice() {
     shipToGst: "",
   });
   const formRef = useRef(null);
+
   useEffect(() => {
     getUserProfile(setLoading, setFormData);
 
@@ -111,6 +113,7 @@ export default function NewInvoice() {
       setShowClientModal(true);
     }
   };
+
   const closeModal = () => {
     setShowClientModal(false);
   };
@@ -163,6 +166,7 @@ export default function NewInvoice() {
       selectedValue === "percent" || selectedValue === "flat amount"
     );
   };
+
   const calculateTotal = () => {
     let baseAmount = Number(grandTotal);
 
@@ -199,6 +203,7 @@ export default function NewInvoice() {
   const handleDiscountAmountPercentage = (e) => {
     setDiscountAmountPercentage(e.target.value);
   };
+
   const handleTaxpercentage = (e) => {
     let value = e.target.value;
 
@@ -384,7 +389,7 @@ export default function NewInvoice() {
                     value={invoiceName}
                     name="invoiceName"
                     onChange={handleInoivceTitleChange}
-                    className="py-1 px-2 w-50 border border-2 border-secondary-subtle input-field rounded"
+                    className="py-1 px-2 w-50 border-2 border-secondary-subtle input-field rounded"
                   />
                 </div>
                 <div className="col-md-6 ">

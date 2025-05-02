@@ -165,7 +165,6 @@ export const addOrUpdateItem = (itemData, navigate, setLoading) => {
     });
 };
 
-
 // Get Items
 export const getUserItems = (setItems, setLoading) => {
   axios
