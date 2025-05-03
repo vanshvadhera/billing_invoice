@@ -1,6 +1,6 @@
 // src/App.js
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Routes,
   Route,
   useLocation,
@@ -112,7 +112,7 @@ const App = () => {
         />
         <Route
           path="/report"
-          element={<PrivateRoute element={<Report/>} />}
+          element={<PrivateRoute element={<Report />} />}
         />
       </Routes>
     </div>
@@ -121,9 +121,9 @@ const App = () => {
 
 // Wrap App with Router
 const AppWithRouter = () => (
-  <Router>
+  <BrowserRouter>
     <App />
-  </Router>
+  </BrowserRouter>
 );
 
 export default AppWithRouter;
