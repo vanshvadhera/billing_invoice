@@ -44,9 +44,9 @@ const Report = () => {
   }, [invoices]);
 
   const getStats = (list) => ({
-    clients: new Set(list.map(i => i.client_id)).size,
+    clients: new Set(list.map(i => i.billName)).size,
     count: list.length,
-    total: list.reduce((sum, i) => sum + Number(i.totalAmount || 0), 0)
+    total: list.reduce((sum, i) => sum + Number(i.subTotal || 0), 0)
   });
 
   const getFilteredKeys = () =>
@@ -67,7 +67,7 @@ const Report = () => {
       tooltipMap[key] = stats;
       return stats.clients; // <- showing Clients in pie chart
     });
-  
+
     return {
       labels: keys,
       datasets: [{

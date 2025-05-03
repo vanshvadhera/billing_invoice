@@ -61,10 +61,6 @@ const App = () => {
         {/* Protected Routes */}
         <Route path="/" element={<PrivateRoute element={<Invoice />} />} />
         <Route
-          path="/invoices"
-          element={<PrivateRoute element={<Invoice />} />}
-        />
-        <Route
           path="/invoice/new-invoice"
           element={<PrivateRoute element={<NewInvoice />} />}
         />

@@ -112,7 +112,7 @@ export default function Header() {
 
               <ul className="navigation clearfix ps-0">
                 <li className="current">
-                  <Link to={"/invoices"}>Invoice</Link>
+                  <Link to={"/"}>Invoice</Link>
                 </li>
 
                 <li>
@@ -144,7 +144,7 @@ export default function Header() {
           <div className="d-lg-block d-md-none d-none">
             <ul className="d-flex list-unstyled align-items-center mb-0 main-nav">
               <li className="nav-item ">
-                <Link className="nav-link " to={"/invoices"}>
+                <Link className="nav-link " to={"/"}>
                   Invoice
                 </Link>
               </li>
