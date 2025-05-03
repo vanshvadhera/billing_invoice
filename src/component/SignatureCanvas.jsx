@@ -56,7 +56,7 @@ export default function SignatureCanvas({ onUploadSuccess, preview }) {
         <img
           src={preview || signature}
           alt="Signature Preview"
-          className="mt-3 preview-size"
+          className="mt-3 preview-size rounded-lg"
         />
       )}
       <button

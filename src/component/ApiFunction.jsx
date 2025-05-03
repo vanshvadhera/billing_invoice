@@ -185,6 +185,20 @@ export const getUserItems = (setItems, setLoading) => {
     });
 };
 
+// get last invoice
+export const getLastInvoiceNumber = async () => {
+  try {
+    const res = await axios.post(`${baseUrl}/invoices/get-last-invoice-id`, {
+      user_id: getUserId(),
+    });
+    return res.data?.invoice_count;
+  } catch (error) {
+    console.error("Error fetching last invoice number:", error);
+    return null; // Or handle however you'd like
+  }
+};
+
+
 // Delete Item
 export const deleteItem = (item_id, setItems) => {
   showConfirm().then((result) => {

@@ -4,6 +4,7 @@ import ItemRow from "../component/ItemRow";
 import {
   addUpdateInvoice,
   getClients,
+  getLastInvoiceNumber,
   getUserProfile,
 } from "../component/ApiFunction";
 import ClientFormModal from "../component/ClientFormModal";
@@ -23,6 +24,7 @@ export default function NewInvoice() {
   const [formData, setFormData] = useState({});
   const [isShipTo, setIsShipTo] = useState(false);
   const [copyBilling, setCopyBilling] = useState("yes");
+  const [invoiceNumber, setInvoiceNumber] = useState("");
   const [itemRow, setItemRow] = useState([
     {
       id: 1,
@@ -135,11 +137,29 @@ export default function NewInvoice() {
 
   const formRef = useRef(null);
 
+  const fetchLastInvoiceNumber = async () => {
+    const lastinvoicenumber = await getLastInvoiceNumber();
+    let invoiceNumber = `${formData?.store_code}-${lastinvoicenumber + 1}`;
+    setInvoiceNumber(invoiceNumber);
+  }
+
+  // Fetch last invoice number
+  useEffect(() => {
+    if (editData) {
+      setInvoiceNumber(editData?.invoiceNumber || "");
+    } else {
+      fetchLastInvoiceNumber();
+    }
+  }, [editData, formData?.store_code]);
+
+  // Fetching user profile and setting initial values
   useEffect(() => {
     getUserProfile(setLoading, setFormData);
 
-    if (editData) {
+    console.log("editData", editData);
+    
 
+    if (editData) {
       console.log(editData);
       setSelectedClient({
         name: editData?.billName,
@@ -178,6 +198,7 @@ export default function NewInvoice() {
       setTotalDiscount(editData?.totalDiscount || 0);
       setSubTotal(editData?.subTotal || 0);
       setTotal(editData?.total || 0);
+      setInvoiceNumber(editData?.invoiceNumber || "");
 
     } else {
       const today = new Date().toISOString().split("T")[0];
@@ -298,7 +319,7 @@ export default function NewInvoice() {
       sigUrl: formData?.signature_logo || "",
       date: currentDate,
       invoiceName: invoiceName,
-      invoiceNumber: "", // Populate if needed
+      invoiceNumber: invoiceNumber, // Populate if needed
       tax: tax,
       discount: discount,
       totalTax: totalTax,
@@ -307,6 +328,7 @@ export default function NewInvoice() {
       total: total,
       balanceAmount: balanceAmount,
       items: itemRow,
+      invoice_id: editData?.invoice_id || "",
       ...(copyBilling === "yes"
         ? {
           shipToName: selectedClient?.name || "",
@@ -477,10 +499,11 @@ export default function NewInvoice() {
                 <div className="col-md-6">
                   <div className="d-flex flex-column my-3 gap-3 ">
                     <NewPageInput
-                      label="Number"
+                      label="Inv Number"
                       name="invoiceNumber"
                       placeholder="INV"
                       type="number"
+                      invoiceNumber={invoiceNumber}
                     />
                     <div className="row align-items-center flex-row">
                       <div className="col-md-3">

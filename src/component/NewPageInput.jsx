@@ -8,6 +8,7 @@ export default function NewPageInput({
   value,
   readOnly,
   className,
+  invoiceNumber
 }) {
   return (
     <div className={`row ${row ? "flex-column" : "align-items-center flex-row"}`}>
@@ -22,7 +23,11 @@ export default function NewPageInput({
 
       {/* Input */}
       <div className={`${(!label || row) ? "col-12" : "col-md-9"}`}>
-        <input
+        {invoiceNumber ? (
+          <div className="d-flex align-items-center justify-content-between">
+            <span className="text-dark fs-o8">{invoiceNumber}</span>
+          </div>
+        ) : <input
           type={type}
           name={name}
           value={value} // Controlled input
@@ -32,7 +37,8 @@ export default function NewPageInput({
           required
           readOnly={readOnly}
           aria-label={label} // Accessibility improvement
-        />
+        />}
+
       </div>
     </div>
   );

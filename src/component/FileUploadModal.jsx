@@ -19,8 +19,8 @@ export default function FileUploadModal({
   return (
     <>
       {preview && (
-        <div className="mt-3 px-0">
-          <img src={preview} alt="Preview" className="preview-size" />
+        <div className="mt-3 px-0 ">
+          <img src={preview} alt="Preview" className="preview-size rounded-lg " />
         </div>
       )}
       <button
@@ -48,7 +48,7 @@ export default function FileUploadModal({
             </div>
             <div className="modal-body">
               <div className="container">
-           
+
 
                 <label htmlFor="file" className="footer">
                   <svg
