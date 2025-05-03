@@ -14,22 +14,9 @@ const ItemRow = ({
   taxpercentage,
   setTotalTax,
   editData,
+  itemRow,
+  setItemRow
 }) => {
-
-  const [itemRow, setItemRow] = useState([
-    {
-      id: 1,
-      selectedItemId: "",
-      selectedItemName: "",
-      description: "",
-      details: "",
-      hsnCode: "",
-      rate: "",
-      quantity: "",
-      total: 0,
-      isChecked: false,
-    },
-  ]);
 
   const [showItemModal, setShowItemModal] = useState(false);
   const [items, setItems] = useState([]);
@@ -54,35 +41,35 @@ const ItemRow = ({
     return itemRow.reduce((acc, row) => acc + row.total, 0).toFixed(2);
   }, [itemRow]);
 
-  useEffect(() => {
-    if (editData?.items?.length && items.length) {
-      const restoredRows = editData.items.map((item, index) => {
-        const matchingItem = items.find((it) => it.item_name === item.select);
+  // useEffect(() => {
+  //   if (editData?.items?.length && items.length) {
+  //     const restoredRows = editData.items.map((item, index) => {
+  //       const matchingItem = items.find((it) => it.item_name === item.select);
 
-        return {
-          id: index + 1,
-          selectedItemId: matchingItem?.item_id || "",
-          selectedItemName: item.select,
-          selectedOption: matchingItem
-            ? {
-              value: matchingItem.item_id,
-              label: matchingItem.item_name,
-              item: matchingItem,
-            }
-            : null,
-          description: item.select || "",
-          details: item.details || "",
-          hsnCode: item.hsncode || "",
-          rate: parseFloat(item.rate) || 0,
-          quantity: parseFloat(item.quantity) || 1,
-          total: parseFloat(item.total) || 0,
-          isChecked: item.isChecked || false,
-        };
-      });
+  //       return {
+  //         id: index + 1,
+  //         selectedItemId: matchingItem?.item_id || "",
+  //         selectedItemName: item.select,
+  //         selectedOption: matchingItem
+  //           ? {
+  //             value: matchingItem.item_id,
+  //             label: matchingItem.item_name,
+  //             item: matchingItem,
+  //           }
+  //           : null,
+  //         description: item.select || "",
+  //         details: item.details || "",
+  //         hsnCode: item.hsncode || "",
+  //         rate: parseFloat(item.rate) || 0,
+  //         quantity: parseFloat(item.quantity) || 1,
+  //         total: parseFloat(item.total) || 0,
+  //         isChecked: item.isChecked || false,
+  //       };
+  //     });
 
-      setItemRow(restoredRows);
-    }
-  }, [editData, items]);
+  //     setItemRow(restoredRows);
+  //   }
+  // }, [editData, items]);
 
   useEffect(() => {
     if (onDataChange) onDataChange(itemRow);

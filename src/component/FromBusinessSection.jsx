@@ -56,7 +56,7 @@ export default function FromBusinessSection({formData}) {
         />
 
         {/* Collapsible Additional Fields */}
-        <div className="row align-items-center flex-row">
+        {/* <div className="row align-items-center flex-row">
           <div className="col-md-3"></div>
           <div className="col-md-8">
             <a
@@ -97,7 +97,7 @@ export default function FromBusinessSection({formData}) {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

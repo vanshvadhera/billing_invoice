@@ -9,18 +9,23 @@ export default function GeneratedInvoice() {
   const { state: formData } = useLocation();
   const navigate = useNavigate();
 
-  const [emailShare, setEmailShare] = useState("");
-  const handleInputEmailShare = (event) => {
-    const { value } = event.target;
-    setEmailShare(value);
-  };
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  console.log("Generated Invoice Data:", formData);
+  
+
+  // const [emailShare, setEmailShare] = useState("");
+  // const handleInputEmailShare = (event) => {
+  //   const { value } = event.target;
+  //   setEmailShare(value);
+  // };
+  // const validateEmail = (email) => {
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   return emailRegex.test(email);
+  // };
+
   const handleEditClick = () => {
     navigate("/invoice/new-invoice", { state: formData });
   };
+
   // const {
   //   logo,
   //   invoiceName,
@@ -64,7 +69,7 @@ export default function GeneratedInvoice() {
     console.log("✅ Final Data (JSON):", JSON.stringify(data, null, 2));
     addUpdateInvoice(data, navigate);
   };
-  
+
   return (
     <div className="container my-5">
       <div className="row mx-2 flex-wrap ">
@@ -351,8 +356,9 @@ export default function GeneratedInvoice() {
           </div> */}
           <InvoicePdf formData={formData} />
         </div>
-        <div className="col-md-3 mt-lg-0 mt-md-2 mt-3">
-          <p className="fs-o8 border-1 border-bottom border-dark ">
+
+        {/* <div className="col-md-3 mt-lg-0 mt-md-2 mt-3">
+          <p className="fs-o8 border-bottom border-dark ">
             PREVIEW VIA EMAIL
           </p>
 
@@ -360,7 +366,7 @@ export default function GeneratedInvoice() {
             <input
               type="email"
               name="EmaleShare"
-              className="py-2 px-2 border border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+              className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
               placeholder="name@buisness.com"
               value={emailShare}
               onChange={handleInputEmailShare}
@@ -382,7 +388,7 @@ export default function GeneratedInvoice() {
               Send
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

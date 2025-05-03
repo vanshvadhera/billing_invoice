@@ -14,32 +14,116 @@ import { getUserId } from "../../Helper";
 
 export default function NewInvoice() {
   const [invoiceName, setInvoiceName] = useState("New Invoice");
-  const [selectedOptionTax, setSelectedOptionTax] = useState("none");
-  const [selectedOptionDiscount, setSelectedOptionDiscount] = useState("none");
-  const [isTaxApplicable, setIsTaxApplicable] = useState(false);
-  const [isDiscountApplicable, setIsDiscountApplicable] = useState(false);
   const [currentDate, setCurrentDate] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
-  const navigate = useNavigate();
-  const location = useLocation();
   const [clients, setClients] = useState([]);
   const [selectedClient, setSelectedClient] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [tableData, setTableData] = useState([]);
-  const [grandTotal, setGrandTotal] = useState("0.00");
-  const [taxLabletChange, setTaxLabletChange] = useState("Tax");
-  const [taxpercentage, setTaxpercentage] = useState("");
-  const [discountpercentage, setDiscountpercentage] = useState("0.000%");
-  const [totalTaxPrice, setTotalTaxPrice] = useState(0);
-  const [discountAmountPercentage, setDiscountAmountPercentage] = useState("");
-  const [discountTotal, setDiscountTotal] = useState("");
-  const [previewStatus, setPreviewStatus] = useState(false);
-  const [previewData, setPreviewData] = useState(null);
   const [showClientModal, setShowClientModal] = useState(false);
   const [formData, setFormData] = useState({});
   const [isShipTo, setIsShipTo] = useState(false);
   const [copyBilling, setCopyBilling] = useState("yes");
+  const [itemRow, setItemRow] = useState([
+    {
+      id: 1,
+      selectedItemId: "",
+      selectedItemName: "",
+      description: "",
+      details: "",
+      hsnCode: "",
+      rate: "",
+      quantity: "",
+      total: 0,
+      isChecked: false,
+    },
+  ]);
+
+  const navigate = useNavigate();
+  const location = useLocation();
   const editData = location.state || null;
+
+  const [discount, setDiscount] = useState({
+    isDiscountApplicable: false,
+    discountType: "none",
+    discountPercentage: "",
+    discountFlat: "",
+  })
+  const [tax, setTax] = useState({
+    isTaxApplicable: false,
+    taxType: "none",
+    taxPercentage: "",
+  })
+  const [totalTax, setTotalTax] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
+  const [subTotal, setSubTotal] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [balanceAmount, setBalanceAmount] = useState(0);
+
+  const hanldeDiscount = (data, type) => {
+    // console.log("data", data, "type", type);
+
+    if (type === "type") {
+      if (data === "none") {
+        setDiscount({
+          ...discount,
+          isDiscountApplicable: false,
+          discountType: data,
+          discountPercentage: "",
+          discountFlat: "",
+        });
+        return
+      }
+      setDiscount({
+        ...discount,
+        isDiscountApplicable: true,
+        discountType: data,
+        discountPercentage: "",
+        discountFlat: "",
+      });
+    }
+    if (type === "percent") {
+      setDiscount({
+        ...discount,
+        discountPercentage: data,
+        discountFlat: "",
+      });
+    }
+    if (type === "flat") {
+      setDiscount({
+        ...discount,
+        discountFlat: data,
+        discountPercentage: "",
+      });
+    }
+
+
+  }
+
+  const handleTax = (data, type) => {
+    if (type === "type") {
+      if (data === "none") {
+        setTax({
+          ...tax,
+          isTaxApplicable: false,
+          taxType: data,
+          taxPercentage: "",
+        });
+        return
+      }
+      setTax({
+        ...tax,
+        isTaxApplicable: true,
+        taxType: data,
+        taxPercentage: "",
+      });
+    }
+    if (type === "other") {
+      setTax({
+        ...tax,
+        taxPercentage: data,
+      });
+    }
+  }
 
   const [shipToFields, setShipToFields] = useState({
     shipToName: "",
@@ -48,50 +132,53 @@ export default function NewInvoice() {
     shipToMobile: "",
     shipToGst: "",
   });
+
   const formRef = useRef(null);
 
   useEffect(() => {
     getUserProfile(setLoading, setFormData);
 
     if (editData) {
-      // Manually set the fields based on editData
+
       console.log(editData);
       setSelectedClient({
-        name: editData.billName,
-        email: editData.billEmail,
-        address: editData.billAddress,
-        mobile_number: editData.billMobile,
-        gst_no: editData.gst_no,
+        name: editData?.billName,
+        email: editData?.billEmail,
+        address: editData?.billAddress,
+        mobile_number: editData?.billMobile,
+        gst_no: editData?.gst_no,
       });
 
       setIsShipTo(!!editData.shipToName);
       setCopyBilling(
-        editData.shipToName || editData.shipToEmail ? "no" : "yes"
+        editData?.shipToName || editData?.shipToEmail ? "no" : "yes"
       );
       setShipToFields({
-        shipToName: editData.shipToName || "",
-        shipToEmail: editData.shipToEmail || "",
-        shipToAddress: editData.shipToAddress || "",
-        shipToMobile: editData.shipToMobile || "",
-        shipToGst: editData.shipToGst || "",
+        shipToName: editData?.shipToName || "",
+        shipToEmail: editData?.shipToEmail || "",
+        shipToAddress: editData?.shipToAddress || "",
+        shipToMobile: editData?.shipToMobile || "",
+        shipToGst: editData?.shipToGst || "",
       });
+      setInvoiceName(editData?.invoiceName || "invoice");
+      setCurrentDate(editData?.date || "");
+      setItemRow(editData?.items || []);
+      setDiscount(editData?.discount || {
+        isDiscountApplicable: false,
+        discountType: "none",
+        discountPercentage: "",
+        discountFlat: "",
+      });
+      setTax(editData?.tax || {
+        isTaxApplicable: false,
+        taxType: "none",
+        taxPercentage: "",
+      });
+      setTotalTax(editData?.totalTax || 0);
+      setTotalDiscount(editData?.totalDiscount || 0);
+      setSubTotal(editData?.subTotal || 0);
+      setTotal(editData?.total || 0);
 
-      setTableData(editData.items || []);
-      setGrandTotal(editData.grandTotal || "0.00");
-      setTaxpercentage(editData.taxpercentage || "");
-      setDiscountpercentage(editData.discountpercentage || "0.000%");
-      setTotalTaxPrice(editData.totalTaxPrice || 0);
-      setDiscountAmountPercentage(editData.discountAmountPercentage || "");
-      setDiscountTotal(editData.discountTotal || "");
-      setSelectedOptionTax(editData.selectedOptionTax || "none");
-      setSelectedOptionDiscount(editData.selectedOptionDiscount || "none");
-      setIsTaxApplicable(editData.isTaxApplicable || false);
-      setIsDiscountApplicable(editData.isDiscountApplicable || false);
-      setInvoiceName(editData.invoiceName || "invoice");
-      setCurrentDate(editData.date || "");
-      console.log(editData.date);
-      setAdditionalNotes(editData.additionalDetails || "");
-      setSelectedOptionTax(editData.selectedOptionTax || "");
     } else {
       const today = new Date().toISOString().split("T")[0];
       setCurrentDate(today);
@@ -118,7 +205,7 @@ export default function NewInvoice() {
     fetchClients();
   }, []);
 
-  const successClientApi = fetchClients;
+  // const successClientApi = fetchClients;
 
   const clientOptions = [
     ...clients.map((client) => ({
@@ -138,112 +225,12 @@ export default function NewInvoice() {
     },
   ];
 
-  const handleCheckedPriceChange = (newPrice) => {
-    setTotalTaxPrice(newPrice);
-  };
-
-  const handleSelectChangeTax = (e) => {
-    const value = e.target.value;
-    setSelectedOptionTax(value)
-    setIsTaxApplicable(value === "CGST_SGST" || value === "other");
-  };
-
-  const handleSelectChangeDicount = (e) => {
-    const selectedValue = e.target.value;
-    setSelectedOptionDiscount(selectedValue);
-    setIsDiscountApplicable(
-      selectedValue === "percent" || selectedValue === "flat amount"
-    );
-  };
-
-  const calculateTotal = () => {
-    let baseAmount = Number(grandTotal);
-
-    let discountAmount = 0;
-    if (selectedOptionDiscount === "percent" && discountpercentage) {
-      discountAmount = (baseAmount * parseFloat(discountpercentage)) / 100;
-    } else if (
-      selectedOptionDiscount === "flat amount" &&
-      discountAmountPercentage
-    ) {
-      discountAmount = parseFloat(discountAmountPercentage);
-    }
-
-    const discountedSubtotal = baseAmount - discountAmount;
-
-    let taxPercent = 0;
-    if (isTaxApplicable && taxpercentage) {
-      taxPercent = parseFloat(String(taxpercentage).replace("%", ""));
-    }
-
-    let taxAmount = 0;
-    if (selectedOptionTax === "CGST_SGST") {
-      taxAmount = (discountedSubtotal * taxPercent) / 100;
-    } else {
-      taxAmount = (discountedSubtotal * taxPercent) / 100;
-    }
-
-    let totalAmount = discountedSubtotal + taxAmount;
-    totalAmount = totalAmount < 0 ? 0 : totalAmount;
-
-    return totalAmount.toFixed(2);
-  };
-
-  const handleDiscountAmountPercentage = (e) => {
-    setDiscountAmountPercentage(e.target.value);
-  };
-
-  const handleTaxpercentage = (e) => {
-    let value = e.target.value;
-
-    value = value.replace("%", "");
-
-    setTaxpercentage(value + "%");
-  };
-
-  useEffect(() => {
-    let discount = 0;
-
-    if (selectedOptionDiscount === "percent" && !isNaN(discountpercentage)) {
-      discount = (grandTotal * parseFloat(discountpercentage)) / 100;
-    } else if (
-      selectedOptionDiscount === "flat amount" &&
-      !isNaN(discountAmountPercentage)
-    ) {
-      discount = parseFloat(discountAmountPercentage);
-    }
-
-    setDiscountTotal(discount);
-  }, [
-    grandTotal,
-    selectedOptionDiscount,
-    discountpercentage,
-    discountAmountPercentage,
-  ]);
-
-  const handleDiscountpercentage = (e) => {
-    setDiscountpercentage(e.target.value);
-  };
-
   const handleFocus = (e) => {
     const position = taxpercentage.length - 1;
     e.target.setSelectionRange(0, position);
   };
 
-  const handleTaxLableChange = (e) => {
-    setTaxLabletChange(e.target.value);
-  };
-
-  const handleTableDataChange = (data) => {
-    setTableData(data);
-  };
-
-  const safeToFixed = (value, digits = 2) => {
-    const num = parseFloat(String(value).replace("%", ""));
-    return !isNaN(num) ? num.toFixed(digits) : "0.00";
-  };
-
-  const getInvoiceFormData = (formRef, shipToFields, copyBilling) => {
+  const getInvoiceFormData1 = (formRef, shipToFields, copyBilling) => {
     const form = formRef.current;
     if (!form) return null;
 
@@ -267,7 +254,6 @@ export default function NewInvoice() {
     Object.entries(shipToFields).forEach(([key, value]) => {
       data[key] = value;
     });
-    data.selectedOptionTax = selectedOptionTax;
     data.items = items;
 
     const numberValue = formData.get("invoiceNumber");
@@ -275,26 +261,84 @@ export default function NewInvoice() {
       data.invoiceNumber = `INV${numberValue}`;
     }
     const logoImage = formData.get("logoImage");
-    data.logoImageName = logoImage?.name || null;
-    data.copyBilling = copyBilling;
-    data.isTaxApplicable = isTaxApplicable;
+    // data.copyBilling = copyBilling;
+    return data;
+
+
+    return data;
+  };
+
+  const getInvoiceFormData2 = (formRef, shipToFields, copyBilling) => {
+
+    // console.log("selectedClient", selectedClient);
+    // console.log("formData", formData);
+    // console.log("itemRow", itemRow);
+    // console.log("currentDate", currentDate);
+    // console.log("discount", discount);
+    // console.log("tax", tax);
+    // console.log("totalTax", totalTax);
+    // console.log("totalDiscount", totalDiscount);
+    // console.log("subTotal", subTotal);
+    // console.log("total", total);
+    // console.log("copyBilling", copyBilling);
+    // console.log("shipToFields", shipToFields);
+
+    let data = {
+      billAddress: selectedClient?.address || "",
+      billEmail: selectedClient?.email || "",
+      billMobile: selectedClient?.mobile_number || "",
+      billName: selectedClient?.name || "",
+      gst_no: selectedClient?.gst_no || "",
+      businessAddress: formData?.address || "",
+      businessEmail: formData?.email || "",
+      businessName: formData?.companyName || "",
+      businessNumber: formData?.contactNumber || "",
+      businessPhone: formData?.phoneNumber || "",
+      logo: formData?.logo || "",
+      sigUrl: formData?.signature_logo || "",
+      date: currentDate,
+      invoiceName: invoiceName,
+      invoiceNumber: "", // Populate if needed
+      tax: tax,
+      discount: discount,
+      totalTax: totalTax,
+      totalDiscount: totalDiscount,
+      subTotal: subTotal,
+      total: total,
+      balanceAmount: balanceAmount,
+      items: itemRow,
+      ...(copyBilling === "yes"
+        ? {
+          shipToName: selectedClient?.name || "",
+          shipToEmail: selectedClient?.email || "",
+          shipToAddress: selectedClient?.address || "",
+          shipToMobile: selectedClient?.mobile_number || "",
+          shipToGst: selectedClient?.gst_no || "",
+        }
+        : {
+          shipToName: shipToFields?.shipToName || "",
+          shipToEmail: shipToFields?.shipToEmail || "",
+          shipToAddress: shipToFields?.shipToAddress || "",
+          shipToMobile: shipToFields?.shipToMobile || "",
+          shipToGst: shipToFields?.shipToGst || "",
+        }),
+    };
     return data;
   };
 
   const handlePreviewClick = () => {
-    const data = getInvoiceFormData(formRef, shipToFields, copyBilling);
+    const data = getInvoiceFormData2(formRef, shipToFields, copyBilling);
     if (!data) return;
-    console.log("✅ Final Data to be sentr:", JSON.stringify(data, null, 2));
-    setPreviewStatus(true);
+    console.log("✅ Final Data to be sentr:", data);
     navigate("/invoice/preview-invoice", { state: data });
   };
 
   const generatePdf = () => {
-    const data = getInvoiceFormData(formRef, shipToFields, copyBilling);
+    const data = getInvoiceFormData2(formRef, shipToFields, copyBilling);
     if (!data) return;
     data.user_id = getUserId();
     data.status = "active";
-    console.log("✅ Final Data (JSON):", JSON.stringify(data, null, 2));
+    console.log("✅ Final Data (JSON):", data);
     addUpdateInvoice(data, navigate);
   };
 
@@ -302,12 +346,39 @@ export default function NewInvoice() {
     setInvoiceName(e.target.value);
   };
 
-  const handleDateChange = (e) => {
-    setCurrentDate(e.target.value);
+  const handleGrandTotalChange = (grandTotal) => {
+    const parsedTotal = Number(grandTotal);
+    if (isNaN(parsedTotal)) return;
+
+    setSubTotal(parsedTotal);
+
+    let discountAmount = calculateDiscount(parsedTotal, discount);
+    let priceAfterDiscount = Math.max(parsedTotal - discountAmount, 0);
+
+    let totalTax = calculateTax(priceAfterDiscount, tax);
+    let finalAmount = priceAfterDiscount + totalTax;
+
+    setTotal(Math.round(finalAmount));
+    setBalanceAmount(Math.round(finalAmount));
+    setTotalDiscount(discountAmount);
+    setTotalTax(totalTax);
   };
 
-  const handleGrandTotalChange = (grandTotal) => {
-    setGrandTotal(grandTotal);
+  const calculateDiscount = (amount, discount) => {
+    if (!discount?.isDiscountApplicable) return 0;
+    if (discount?.discountType === "percent") {
+      return (amount * discount?.discountPercentage) / 100;
+    }
+    if (discount?.discountType === "flat amount") {
+      return discount?.discountFlat || 0;
+    }
+    return 0;
+  };
+
+  const calculateTax = (amount, tax) => {
+    if (!tax?.isTaxApplicable) return 0;
+    let percentage = tax?.taxType === "CGST_SGST" || tax?.taxType === "IGST" ? 18 : tax?.taxPercentage || 0;
+    return (amount * percentage) / 100;
   };
 
   return (
@@ -325,7 +396,7 @@ export default function NewInvoice() {
           <ClientFormModal
             showClientModal={showClientModal}
             closeModal={closeModal}
-            onSuccess={successClientApi}
+            onSuccess={clients}
           />
 
           <div className="row mx-2 flex-wrap">
@@ -350,9 +421,6 @@ export default function NewInvoice() {
                   <button
                     type="button"
                     className="btn btn-outline-secondary active border-start"
-                    onClick={() => {
-                      setPreviewStatus(false);
-                    }}
                   >
                     Edit
                   </button>
@@ -435,65 +503,12 @@ export default function NewInvoice() {
 
                 <ItemRow
                   editData={editData}
-                  onDataChange={handleTableDataChange}
                   onGrandTotalChange={handleGrandTotalChange}
-                  isTaxApplicable={isTaxApplicable}
-                  taxLabletChange={taxLabletChange}
-                  taxpercentage={taxpercentage}
-                  setTotalTax={handleCheckedPriceChange}
+                  itemRow={itemRow}
+                  setItemRow={setItemRow}
                 />
 
-                {/* <div className="row  mt-3">
-                  <RowItem label="Subtotal" value={safeToFixed(grandTotal)} />
-
-                  {isDiscountApplicable && (
-                    <RowItem
-                      label={`Discount ${
-                        selectedOptionDiscount === "percent"
-                          ? `(${discountpercentage}%)`
-                          : selectedOptionDiscount === "flat amount"
-                          ? `(Flat)`
-                          : ""
-                      }`}
-                      value={`- ${safeToFixed(discountTotal)}`}
-                    />
-                  )}
-
-                  {isTaxApplicable && selectedOptionTax === "CGST_SGST" && (
-                    <>
-                      <RowItem
-                        label={`CGST (${parseFloat(taxpercentage) / 2}%)`}
-                        value={safeToFixed(
-                          ((grandTotal - discountTotal) *
-                            (parseFloat(taxpercentage) / 2)) /
-                            100
-                        )}
-                      />
-                      <RowItem
-                        label={`SGST (${parseFloat(taxpercentage) / 2}%)`}
-                        value={safeToFixed(
-                          ((grandTotal - discountTotal) *
-                            (parseFloat(taxpercentage) / 2)) /
-                            100
-                        )}
-                      />
-                    </>
-                  )}
-
-                  {isTaxApplicable && selectedOptionTax === "other" && (
-                    <RowItem
-                      label={`${taxLabletChange} (${taxpercentage})`}
-                      value={safeToFixed(
-                        ((grandTotal - discountTotal) *
-                          parseFloat(taxpercentage)) /
-                          100
-                      )}
-                    />
-                  )}
-
-                  <RowItem label="Total" value={calculateTotal()} />
-                  <RowItem label="Balance Due" value={calculateTotal()} />
-                </div> */}
+                {/* Sub Total Section */}
                 <div className="row  mt-3">
                   <div className="col-12 justify-content-end d-flex ">
                     <div className="col-xl-2 col-sm-6 col-8">
@@ -502,170 +517,99 @@ export default function NewInvoice() {
                     <div className="col-md-2 ">
                       <span className="fs-o8 fw-medium">
                         <i className="fa-solid fa-indian-rupee-sign me-1 "></i>
-                        {grandTotal}
-                        <input
-                          type="hidden"
-                          value={grandTotal}
-                          name="subtotal"
-                        />
+                        {subTotal || "0.00"}
                       </span>
                     </div>
                   </div>
-                  {isDiscountApplicable && (
+
+                  {/* Discount Section Bill */}
+                  {discount?.isDiscountApplicable && (
                     <div className="col-12 justify-content-end d-flex">
                       <div className="col-xl-2 col-sm-6 col-8">
+                        {/* Discount Heading */}
                         <span className="fs-o8 fw-medium">
                           Discount
-                          {selectedOptionDiscount === "percent" &&
-                            discountpercentage ? (
-                            <> ({parseFloat(discountpercentage)}%)</>
-                          ) : selectedOptionDiscount === "flat amount" &&
-                            discountAmountPercentage ? (
-                            <> (Flat Amount)</>
-                          ) : (
-                            0
-                          )}
-                          <input
-                            type="hidden"
-                            name="discountLabel"
-                            value={`Discount ${selectedOptionDiscount === "percent" &&
-                              discountpercentage
-                              ? `(${parseFloat(discountpercentage)}%)`
-                              : selectedOptionDiscount === "flat amount" &&
-                                discountAmountPercentage
-                                ? "(Flat Amount)"
-                                : ""
-                              }`}
-                          />
+                          {discount?.discountType === "percent"
+                            ? ` (${discount?.discountPercentage || "0"}%)`
+                            : discount?.discountType === "flat"
+                              ? ` (${discount?.discountFlat})`
+                              : ""}
                         </span>
                       </div>
                       <div className="col-md-2">
                         <span className="fs-o8 fw-medium">
-                          -{" "}
                           <i className="fa-solid fa-indian-rupee-sign me-1"></i>
-                          {safeToFixed(discountTotal)}
-                          <input
-                            type="hidden"
-                            value={safeToFixed(discountTotal)}
-                            name="discountTotal"
-                          />
+                          {totalDiscount || "0.00"}
                         </span>
                       </div>
                     </div>
                   )}
 
-                  {isTaxApplicable && (
+                  {/* Tax Section Bill */}
+                  {tax?.isTaxApplicable && (
                     <>
-                      {selectedOptionTax === "CGST_SGST" && (
+                      {tax?.taxType === "CGST_SGST" && (
                         <>
+                          {/* CGST */}
                           <div className="col-12 justify-content-end d-flex">
                             <div className="col-xl-2 col-sm-6 col-8">
                               <span className="fs-o8 fw-medium">
-                                CGST (
-                                {safeToFixed(parseFloat(taxpercentage) / 2)}
-                                %)
+                                CGST (9.00%)
                               </span>
-                              <input
-                                type="hidden"
-                                name="cgstLabel"
-                                value={`CGST (${safeToFixed(
-                                  parseFloat(taxpercentage) / 2
-                                )}%)`}
-                              />
                             </div>
                             <div className="col-md-2">
                               <span className="fs-o8 fw-medium">
                                 <i className="fa-solid fa-indian-rupee-sign me-1"></i>
-                                {/* {safeToFixed(
-                                  ((grandTotal - discountTotal) *
-                                    (parseFloat(taxpercentage) / 2)) /
-                                  100
-                                )} */}
-                                {/* {tax} */}
-
-                                <input
-                                  type="hidden"
-                                  value={safeToFixed(
-                                    ((grandTotal - discountTotal) *
-                                      (parseFloat(taxpercentage) / 2)) /
-                                    100
-                                  )}
-                                  name="cgstTax"
-                                />
+                                {totalTax / 2 || "0.00"}
                               </span>
                             </div>
                           </div>
 
+                          {/* SGST */}
                           <div className="col-12 justify-content-end d-flex">
                             <div className="col-xl-2 col-sm-6 col-8">
                               <span className="fs-o8 fw-medium">
-                                SGST (
-                                {safeToFixed(parseFloat(taxpercentage) / 2)}
-                                %)
+                                SGST (9.00%)
                               </span>
-                              <input
-                                type="hidden"
-                                name="sgstLabel"
-                                value={`SGST (${safeToFixed(
-                                  parseFloat(taxpercentage) / 2
-                                )}%)`}
-                              />
                             </div>
                             <div className="col-md-2">
                               <span className="fs-o8 fw-medium">
                                 <i className="fa-solid fa-indian-rupee-sign me-1"></i>
-                                {safeToFixed(
-                                  ((grandTotal - discountTotal) *
-                                    (parseFloat(taxpercentage) / 2)) /
-                                  100
-                                )}
-
-                                <input
-                                  type="hidden"
-                                  value={safeToFixed(
-                                    ((grandTotal - discountTotal) *
-                                      (parseFloat(taxpercentage) / 2)) /
-                                    100
-                                  )}
-                                  name="sgstTax"
-                                />
+                                {totalTax / 2 || "0.00"}
                               </span>
                             </div>
                           </div>
                         </>
                       )}
-                      {selectedOptionTax === "other" && (
+                      {tax?.taxType === "IGST" && (
+                        <>
+                          {/* IGST */}
+                          <div className="col-12 justify-content-end d-flex">
+                            <div className="col-xl-2 col-sm-6 col-8">
+                              <span className="fs-o8 fw-medium">
+                                IGST (18.00%)
+                              </span>
+                            </div>
+                            <div className="col-md-2">
+                              <span className="fs-o8 fw-medium">
+                                <i className="fa-solid fa-indian-rupee-sign me-1"></i>
+                                {totalTax || "0.00"}
+                              </span>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                      {tax?.taxType === "other" && (
                         <div className="col-12 justify-content-end d-flex">
                           <div className="col-xl-2 col-sm-6 col-8">
                             <span className="fs-o8 fw-medium">
-                              {taxLabletChange} ({taxpercentage || ""})
+                              Tax ({tax?.taxPercentage || "0.00"}%)
                             </span>
                           </div>
                           <div className="col-md-2">
                             <span className="fs-o8 fw-medium">
                               <i className="fa-solid fa-indian-rupee-sign me-1"></i>
-                              {safeToFixed(
-                                ((grandTotal - discountTotal) *
-                                  parseFloat(taxpercentage)) /
-                                100
-                              )}
-
-                              <input
-                                type="hidden"
-                                value={`${taxLabletChange} (${taxpercentage || ""
-                                  })`}
-                                name="taxLabelWithPercentage"
-                              />
-
-                              <input
-                                type="hidden"
-                                value={safeToFixed(
-                                  ((grandTotal - discountTotal) *
-                                    parseFloat(taxpercentage)) /
-                                  100
-                                )}
-                                name="calculatedTaxValue"
-                              />
+                              {totalTax || "0.00"}
                             </span>
                           </div>
                         </div>
@@ -673,6 +617,7 @@ export default function NewInvoice() {
                     </>
                   )}
 
+                  {/* Total */}
                   <div className="col-12 justify-content-end d-flex">
                     <div className="col-xl-2 col-sm-6 col-8">
                       <span className="fs-o8 fw-medium">Total</span>
@@ -680,15 +625,12 @@ export default function NewInvoice() {
                     <div className="col-md-2">
                       <span className="fs-o8 fw-medium">
                         <i className="fa-solid fa-indian-rupee-sign me-1 "></i>
-                        {calculateTotal()}
-                        <input
-                          type="hidden"
-                          name="calculatedTotal"
-                          value={calculateTotal()}
-                        />
+                        {total || "0.00"}
                       </span>
                     </div>
                   </div>
+
+                  {/* Balance Due */}
                   <div className="col-12 justify-content-end d-flex">
                     <div className="col-xl-2 col-sm-6 col-8">
                       <span className="fs-o8 fw-bold">Balance Due</span>
@@ -696,16 +638,13 @@ export default function NewInvoice() {
                     <div className="col-md-2">
                       <span className="fs-o8 fw-bold">
                         <i className="fa-solid fa-indian-rupee-sign me-1 "></i>
-                        {calculateTotal()}
-                        <input
-                          type="hidden"
-                          name="calculatedTotal"
-                          value={calculateTotal()}
-                        />
+                        {balanceAmount || "0.00"}
                       </span>
                     </div>
                   </div>
                 </div>
+
+                {/* Additionaly Notes */}
                 <div className="col-12 px-0">
                   <div className={`col-md-3 `}>
                     <label htmlFor="name" className="text-dark fs-o8">
@@ -721,23 +660,20 @@ export default function NewInvoice() {
                     onChange={(e) => setAdditionalNotes(e.target.value)}
                   />
                 </div>
+
+                {/* Signature */}
                 <div className="w-auto">
                   <img
-                    src={formData.signature_logo}
+                    src={formData?.signature_logo}
                     alt="signature"
                     className="image_width_signature"
-                  />
-                  <input
-                    type="hidden"
-                    value={formData.signature_logo}
-                    name="signature_url"
                   />
                 </div>
               </form>
             </div>
 
+            {/* Tax & Discount Section */}
             <div className="col-md-3 ">
-              {/* Tax Section */}
               <p className="fs-o8 border-bottom border-dark mt-2">
                 Tax
               </p>
@@ -748,49 +684,37 @@ export default function NewInvoice() {
                     Type
                   </label>
                 </div>
+                {/* Tax DropDown */}
                 <div className="col-md-9 ps-2 pe-0">
                   <select
                     id="optionSelect"
-                    value={selectedOptionTax}
-                    onChange={handleSelectChangeTax}
+                    value={tax?.taxType}
+                    onChange={(e) => {
+                      handleTax(e.target.value, "type");
+                    }}
                     className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                   >
                     <option value="none">None</option>
                     <option value="CGST_SGST">CGST & SGST</option>
+                    <option value="IGST">IGST</option>
                     <option value="other">Other</option>
                   </select>
                 </div>
               </div>
 
               {/* Other Tax Options */}
-              {selectedOptionTax === "other" && (
+              {tax?.taxType === "other" && (
                 <>
                   <div className="row align-items-center mx-0 mt-2">
                     <div className="col-md-3 px-0">
-                      <label className="text-dark fs-o8">Label</label>
+                      <label className="text-dark fs-o8">Percent</label>
                     </div>
                     <div className="col-md-9 ps-2 pe-0">
                       <input
                         type="text"
-                        value={taxLabletChange}
-                        name="taxLabel"
-                        onChange={handleTaxLableChange}
-                        placeholder="Tax"
-                        className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="row align-items-center mx-0 mt-2">
-                    <div className="col-md-3 px-0">
-                      <label className="text-dark fs-o8">Rate</label>
-                    </div>
-                    <div className="col-md-9 ps-2 pe-0">
-                      <input
-                        type="text"
-                        value={taxpercentage}
+                        value={tax?.taxPercentage}
                         name="taxpercentage"
-                        onChange={handleTaxpercentage}
+                        onChange={(e) => handleTax(e.target.value, "other")}
                         placeholder="0.000%"
                         onFocus={handleFocus}
                         className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
@@ -805,14 +729,15 @@ export default function NewInvoice() {
                 Discount
               </p>
 
+              {/* Discount Type Dropdown */}
               <div className="row align-items-center mx-0 mt-3">
                 <div className="col-md-3 px-0">
                   <label className="text-dark fs-o8">Type</label>
                 </div>
                 <div className="col-md-9 ps-2 pe-0">
                   <select
-                    value={selectedOptionDiscount}
-                    onChange={handleSelectChangeDicount}
+                    value={discount?.discountType}
+                    onChange={(e) => hanldeDiscount(e.target.value, "type")}
                     className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                   >
                     <option value="none">None</option>
@@ -822,46 +747,29 @@ export default function NewInvoice() {
                 </div>
               </div>
 
-              {selectedOptionDiscount === "percent" && (
+              {/* Discount input Field */}
+              {discount?.discountType !== "none" && (
                 <div className="row align-items-center mx-0 mt-2">
                   <div className="col-md-3 px-0">
-                    <label className="text-dark fs-o8">Percent</label>
+                    <label className="text-dark fs-o8">{discount?.discountType === "percent" ? "Percent" : "Amount"}</label>
                   </div>
                   <div className="col-md-9 ps-2 pe-0">
                     <input
                       type="number"
-                      value={discountpercentage}
+                      value={discount?.discountType === "percent" ? discount?.discountPercentage : discount?.discountFlat}
                       name="discountPercentage"
-                      onChange={handleDiscountpercentage}
-                      placeholder="0.000%"
+                      onChange={(e) => hanldeDiscount(e.target.value, discount?.discountType === "percent" ? "percent" : "flat")}
+                      placeholder={discount?.discountType === "percent" ? "0.000%" : "0.00"}
                       className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                     />
                   </div>
                 </div>
               )}
 
-              {selectedOptionDiscount === "flat amount" && (
-                <div className="row align-items-center mx-0 mt-2">
-                  <div className="col-md-3 px-0">
-                    <label className="text-dark fs-o8">Amount</label>
-                  </div>
-                  <div className="col-md-9 ps-2 pe-0">
-                    <input
-                      type="number"
-                      value={discountAmountPercentage}
-                      name="discountFlat"
-                      onChange={handleDiscountAmountPercentage}
-                      placeholder="0.00"
-                      className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
-                    />
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </>
       )}
-
     </div>
   );
 }
