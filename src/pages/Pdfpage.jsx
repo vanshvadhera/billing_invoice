@@ -303,7 +303,7 @@ const InvoiceGenerator = (props) => {
                       </div>
                     </div>
                     <div className="tm_invoice_right tm_text_right">
-                      <div className="tm_primary_color tm_f50 tm_text_uppercase">
+                      <div className="tm_primary_color tm_f30 tm_text_uppercase">
                         {invoiceData?.invoiceName}
                       </div>
                     </div>

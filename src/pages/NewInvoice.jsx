@@ -157,7 +157,7 @@ export default function NewInvoice() {
     getUserProfile(setLoading, setFormData);
 
     console.log("editData", editData);
-    
+
 
     if (editData) {
       console.log(editData);
@@ -327,7 +327,7 @@ export default function NewInvoice() {
       subTotal: subTotal,
       total: total,
       balanceAmount: balanceAmount,
-      items: itemRow,
+      items: itemRow?.filter(item => item?.selectedItemId !== "new-item"),
       invoice_id: editData?.invoice_id || "",
       ...(copyBilling === "yes"
         ? {

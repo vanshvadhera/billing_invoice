@@ -46,9 +46,10 @@ export default function CreateItem({ onClose, fetchUserItems, existingItem, loca
 
     addOrUpdateItem(
       itemData,
-      () => {
+      (item_id) => {
         setLoading(false);
         onClose();
+        const updatedItemData = { ...itemData, item_id };
         Swal.fire(
           "Success",
           `Item ${existingItem ? "updated" : "added"} successfully!`,
@@ -58,7 +59,7 @@ export default function CreateItem({ onClose, fetchUserItems, existingItem, loca
           fetchUserItems();
         }
         if (location === "invoice") {
-          handleAddNewItem(itemData);
+          handleAddNewItem(updatedItemData);
         }
         setFormData({
           item_name: "",

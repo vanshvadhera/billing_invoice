@@ -153,13 +153,12 @@ export const updateProfile = (setIsSubmitting, formData) => {
 };
 
 // Add or Update Item
-export const addOrUpdateItem = (itemData, navigate, setLoading) => {
+export const addOrUpdateItem = (itemData, onSuccess, setLoading) => {
   axios
     .post(`${baseUrl}/items/add-update`, itemData)
-    .then(() => {
-      setLoading(false);
-      showSuccess("Item has been saved successfully");
-      navigate("/items");
+    .then((res) => {
+      const { item_id } = res.data.data; // assuming API returns this
+      onSuccess(item_id);
     })
     .catch(() => {
       setLoading(false);

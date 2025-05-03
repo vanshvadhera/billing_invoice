@@ -192,8 +192,6 @@ const ItemRow = ({
   ];
 
   const handleAddNewItem = (item) => {
-    console.log("New Item Added:", item);
-
     // Add the item to the list so it's available in the dropdown
     setItems((prevItems) => [...prevItems, item]);
 
