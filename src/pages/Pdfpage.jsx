@@ -103,7 +103,6 @@ const InvoicePDF = ({
             </View>
           </View>
           <View style={styles.userInfo}>
-
             <View style={styles.section}>
               <Text style={styles.bold}>From:</Text>
               <Text>{invoiceData?.businessName}</Text>
@@ -150,7 +149,7 @@ const InvoicePDF = ({
                     <Text style={styles.col}>{item?.hsnCode}</Text>
                     <Text style={styles.col}>{item?.rate}</Text>
                     <Text style={styles.col}>{item?.quantity}</Text>
-                    <Text style={styles.col}>₹{item?.total}</Text>
+                    <Text style={styles.col}>{item?.total}</Text>
                   </View>
                 ))
               ) : (
@@ -163,43 +162,57 @@ const InvoicePDF = ({
             <View style={styles.totalSection}>
               <View style={styles.total}>
                 <Text>Subtotal</Text>
-                <Text>₹ {invoiceData?.subTotal}</Text>
+                <Text>{invoiceData?.subTotal}</Text>
               </View>
 
-              {invoiceData?.discountLabel && (
+              {invoiceData?.discount?.isDiscountApplicable && (
                 <View style={styles.total}>
-                  <Text>{invoiceData?.discountLabel}</Text>
-                  <Text>- ₹{parseFloat(invoiceData?.discountTotal || 0)?.toFixed(2)}</Text>
+                  <Text>Discount {invoiceData?.discount?.discountType === "percent" ? `${invoiceData?.discount?.discountPercentage}%` : ""}</Text>
+                  <Text>{invoiceData?.totalDiscount}</Text>
                 </View>
               )}
 
-              {invoiceData?.cgstLabel && (
+              {invoiceData?.tax?.taxType === "CGST_SGST" && (
                 <View style={styles.total}>
-                  <Text>{invoiceData?.cgstLabel}</Text>
-                  <Text>₹{invoiceData?.cgstTax}</Text>
+                  <Text>CGST 9%</Text>
+                  <Text>{invoiceData?.totalTax / 2}</Text>
                 </View>
               )}
 
-              {invoiceData?.taxLabelWithPercentage && (
+              {invoiceData?.tax?.taxType === "CGST_SGST" && (
                 <View style={styles.total}>
-                  <Text>{invoiceData?.taxLabelWithPercentage}</Text>
-                  <Text>₹{invoiceData?.calculatedTaxValue}</Text>
+                  <Text>SGST 9%</Text>
+                  <Text>{invoiceData?.totalTax / 2}</Text>
                 </View>
               )}
 
-              {invoiceData?.sgstLabel && (
+              {invoiceData?.tax?.taxType === "IGST" && (
                 <View style={styles.total}>
-                  <Text>{invoiceData?.sgstLabel}</Text>
-                  <Text>₹{invoiceData?.sgstTax}</Text>
+                  <Text>IGST 18%</Text>
+                  <Text>{invoiceData?.totalTax}</Text>
+                </View>
+              )}
+
+              {invoiceData?.tax?.taxType === "IGST" && (
+                <View style={styles.total}>
+                  <Text>Tax (Others)</Text>
+                  <Text>{invoiceData?.totalTax}</Text>
                 </View>
               )}
 
               <View style={styles.total}>
-                <Text style={styles.bold}>Grand Total</Text>
-                <Text style={styles.bold}>₹{invoiceData?.calculatedTotal}</Text>
+                <Text>Total</Text>
+                <Text>{invoiceData?.total}</Text>
               </View>
+
+              <View style={styles.total}>
+                <Text style={styles.bold}>Grand Total</Text>
+                <Text style={styles.bold}>{invoiceData?.total}</Text>
+              </View>
+
             </View>
           </View>
+
           {signature && (
             <View style={styles.signature}>
               <Image
@@ -411,53 +424,61 @@ const InvoiceGenerator = (props) => {
                             <tr>
                               <td className="tm_width_3 tm_primary_color tm_border_none tm_bold">Subtotal</td>
                               <td className="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_bold">
-                              ₹ {invoiceData?.subTotal}
+                                ₹ {invoiceData?.subTotal}
                               </td>
                             </tr>
 
-                            {invoiceData?.discountLabel && (
+                            {invoiceData?.discount?.isDiscountApplicable && (
                               <tr>
                                 <td className="tm_width_3 tm_primary_color tm_border_none tm_pt0">
-                                  {invoiceData.discountLabel}
+                                  Discount {invoiceData?.discount?.discountType === "percent" ? `${invoiceData?.discount?.discountPercentage}%` : ""}
                                 </td>
                                 <td className="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_pt0">
-                                  - ₹
-                                  {!isNaN(invoiceData.discountTotal)
-                                    ? parseFloat(invoiceData.discountTotal).toFixed(2)
-                                    : "0.00"}
+                                  ₹ {invoiceData?.totalDiscount}
                                 </td>
                               </tr>
                             )}
 
-                            {invoiceData?.cgstLabel && (
+                            {invoiceData?.tax?.taxType === "CGST_SGST" && (
                               <tr>
                                 <td className="tm_width_3 tm_primary_color tm_border_none tm_pt0">
-                                  {invoiceData.cgstLabel}
+                                  CGST 9%
                                 </td>
                                 <td className="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_pt0">
-                                  ₹{invoiceData.cgstTax}
+                                  ₹ {invoiceData?.totalTax / 2}
                                 </td>
                               </tr>
                             )}
 
-                            {invoiceData?.taxLabelWithPercentage && (
+                            {invoiceData?.tax?.taxType === "CGST_SGST" && (
                               <tr>
                                 <td className="tm_width_3 tm_primary_color tm_border_none tm_pt0">
-                                  {invoiceData.taxLabelWithPercentage}
+                                  SGST 9%
                                 </td>
                                 <td className="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_pt0">
-                                  ₹{invoiceData.calculatedTaxValue}
+                                  ₹ {invoiceData?.totalTax / 2}
                                 </td>
                               </tr>
                             )}
 
-                            {invoiceData?.sgstLabel && (
+                            {invoiceData?.tax?.taxType === "IGST" && (
                               <tr>
                                 <td className="tm_width_3 tm_primary_color tm_border_none tm_pt0">
-                                  {invoiceData.sgstLabel}
+                                  IGST 18%
                                 </td>
                                 <td className="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_pt0">
-                                  ₹{invoiceData.sgstTax}
+                                  ₹ {invoiceData?.totalTax}
+                                </td>
+                              </tr>
+                            )}
+
+                            {invoiceData?.tax?.taxType === "other" && (
+                              <tr>
+                                <td className="tm_width_3 tm_primary_color tm_border_none tm_pt0">
+                                  Tax (Others)
+                                </td>
+                                <td className="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_pt0">
+                                  ₹ {invoiceData?.totalTax}
                                 </td>
                               </tr>
                             )}
@@ -465,14 +486,14 @@ const InvoiceGenerator = (props) => {
                             <tr>
                               <td className="tm_width_3 tm_primary_color tm_border_none tm_pt0">Total</td>
                               <td className="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_pt0">
-                                {invoiceData?.calculatedTotal}
+                                {invoiceData?.total}
                               </td>
                             </tr>
 
                             <tr className="tm_border_top tm_border_bottom">
                               <td className="tm_width_3 tm_border_top_0 tm_bold tm_f16 tm_primary_color">Grand Total</td>
                               <td className="tm_width_3 tm_border_top_0 tm_bold tm_f16 tm_primary_color tm_text_right">
-                                {invoiceData?.calculatedTotal}
+                                {invoiceData?.total}
                               </td>
                             </tr>
                           </tbody>
@@ -481,10 +502,10 @@ const InvoiceGenerator = (props) => {
                     </div>
                   </div>
 
-                  {invoiceData?.signature_url && (
+                  {invoiceData?.sigUrl && (
                     <div className="d-flex justify-content-end tm_mb10 mt-5">
                       <img
-                        src={invoiceData.signature_url}
+                        src={invoiceData.sigUrl}
                         alt="Signature"
                         width="200"
                         height="200"
