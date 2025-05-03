@@ -9,10 +9,12 @@ import {
   apiBaseUrl,
 } from "../../Helper";
 
+const baseUrl = "https://dev.avidrise.co.in"
+
 // Get Invoices
 export const getUserInvoice = (setInvoices, setLoading) => {
   axios
-    .post(apiBaseUrl("/invoices/get-user-invoices"), { user_id: getUserId() })
+    .post(`${baseUrl}/invoices/get-user-invoices`, { user_id: getUserId() })
     .then((res) => {
       const data = res.data?.data || [];
       const activeInvoices = data.filter((inv) => inv.status === "active");
@@ -29,7 +31,7 @@ export const getUserInvoice = (setInvoices, setLoading) => {
 // Add or Update Invoice
 export const addUpdateInvoice = (data, navigate) => {
   axios
-    .post(apiBaseUrl("/invoices/add-update"), data, {
+    .post(`${baseUrl}/invoices/add-update`, data, {
       headers: { "Content-Type": "application/json" },
     })
     .then((res) => {
@@ -46,7 +48,7 @@ export const deleteInvoice = (invoice_id, setInvoices) => {
   showConfirm().then((result) => {
     if (result.isConfirmed) {
       axios
-        .post(apiBaseUrl("/invoices/add-update"), {
+        .post(`${baseUrl}/invoices/add-update`, {
           user_id: getUserId(),
           invoice_id,
           status: "inactive",
@@ -67,7 +69,7 @@ export const deleteInvoice = (invoice_id, setInvoices) => {
 // Add or Update Client
 export const addOrUpdateClient = (clientData, navigate, setLoading) => {
   axios
-    .post(apiBaseUrl("/clients/add-update"), clientData)
+    .post(`${baseUrl}/clients/add-update`, clientData)
     .then(() => {
       setLoading(false);
       showSuccess("Client has been saved successfully");
@@ -82,7 +84,7 @@ export const addOrUpdateClient = (clientData, navigate, setLoading) => {
 // Get Clients
 export const getClients = (setClients, setLoading) => {
   axios
-    .post(apiBaseUrl("/clients/get-user-clients"), { user_id: getUserId() })
+    .post(`${baseUrl}/clients/get-user-clients`, { user_id: getUserId() })
     .then((res) => {
       setClients(res.data.data || []);
       setLoading(false);
@@ -98,7 +100,7 @@ export const deleteClient = (client_id, setClients) => {
   showConfirm("Are you sure?").then((result) => {
     if (result.isConfirmed) {
       axios
-        .post(apiBaseUrl("/clients/add-update"), {
+        .post(`${baseUrl}/clients/add-update`, {
           user_id: getUserId(),
           client_id,
           status: "inactive",
@@ -119,7 +121,7 @@ export const deleteClient = (client_id, setClients) => {
 // Get User Profile
 export const getUserProfile = (setLoading, setFormData) => {
   axios
-    .get(apiBaseUrl(`/user/get-user/${getUserId()}`), {
+    .get(`${baseUrl}/user/get-user/${getUserId()}`, {
       headers: {
         Authorization: `Bearer ${getAccessToken()}`,
       },
@@ -137,7 +139,7 @@ export const getUserProfile = (setLoading, setFormData) => {
 // Update Profile
 export const updateProfile = (setIsSubmitting, formData) => {
   axios
-    .post(apiBaseUrl("/user/update-profile"), formData)
+    .post(`${baseUrl}/user/update-profile`, formData)
     .then(() => {
       showSuccess("Profile has been updated");
     })
@@ -153,7 +155,7 @@ export const updateProfile = (setIsSubmitting, formData) => {
 // Add or Update Item
 export const addOrUpdateItem = (itemData, navigate, setLoading) => {
   axios
-    .post(apiBaseUrl("/items/add-update"), itemData)
+    .post(`${baseUrl}/items/add-update`, itemData)
     .then(() => {
       setLoading(false);
       showSuccess("Item has been saved successfully");
@@ -168,7 +170,7 @@ export const addOrUpdateItem = (itemData, navigate, setLoading) => {
 // Get Items
 export const getUserItems = (setItems, setLoading) => {
   axios
-    .post(apiBaseUrl("/items/get-user-items"), { user_id: getUserId() })
+    .post(`${baseUrl}/items/get-user-items`, { user_id: getUserId() })
     .then((res) => {
       const activeItems = res.data.data.filter(
         (item) => item.status === "active"
@@ -188,7 +190,7 @@ export const deleteItem = (item_id, setItems) => {
   showConfirm().then((result) => {
     if (result.isConfirmed) {
       axios
-        .post(apiBaseUrl("/items/add-update"), {
+        .post(`${baseUrl}/items/add-update`, {
           user_id: getUserId(),
           item_id,
           status: "inactive",
@@ -208,7 +210,7 @@ export const deleteItem = (item_id, setItems) => {
 export const loginUser = (email, password, setLoading, setAlert, navigate) => {
   setLoading(true);
   axios
-    .post(apiBaseUrl("/user/login"), { email, password })
+    .post(`${baseUrl}/user/login`, { email, password })
     .then((res) => {
       const { accessToken, refreshToken } = res.data.data.tokenData;
       const userId = res.data.data.user_id;
@@ -235,7 +237,7 @@ export const loginUser = (email, password, setLoading, setAlert, navigate) => {
 // Register User
 export const registerUser = (data, setAlert, navigate, setLoading) => {
   axios
-    .post(apiBaseUrl("/user/signup"), data)
+    .post(`${baseUrl}/user/signup`, data)
     .then((res) => {
       Cookies.set("access_token", res.data.data.accessToken, { expires: 7 });
       Cookies.set("refresh_token", res.data.data.refreshToken, { expires: 7 });
@@ -260,7 +262,7 @@ export const registerUser = (data, setAlert, navigate, setLoading) => {
 // Reset Password
 export const resetPassword = (data, setAlert, navigate, setLoading) => {
   axios
-    .post(apiBaseUrl("/user/reset-password"), data)
+    .post(`${baseUrl}/user/reset-password`, data)
     .then((res) => {
       setAlert({ type: "success", message: res.data.msg });
       setTimeout(() => {
@@ -283,7 +285,7 @@ export const uploadFile = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await axios.post(apiBaseUrl("/user/upload-file"), formData, {
+  const response = await axios.post(`${baseUrl}/user/upload-file`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -297,7 +299,7 @@ export const uploadBlobFile = async (blob, filename = "file.png") => {
   const formData = new FormData();
   formData.append("file", blob, filename);
 
-  const response = await fetch(apiBaseUrl("/user/upload-file"), {
+  const response = await fetch(`${baseUrl}/user/upload-file`, {
     method: "POST",
     body: formData,
   });
