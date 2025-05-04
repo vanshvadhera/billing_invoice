@@ -2,14 +2,30 @@ import { Link, useNavigate } from "react-router-dom";
 import CreateInvoiceCard from "../../component/CreateInvoiceCard";
 import { useEffect, useState } from "react";
 import { deleteClient, getClients } from "../../component/ApiFunction";
+import CustomModal from "../../component/CustomModal";
+import CreateClient from "./CreateClient";
 
 export default function Clients() {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [createClientModal, setCreateClientModal] = useState(false);
+  const [dataForEdit, setDataForEdit] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchUserClients = () => {
+    console.log("Fetching clients...");
     getClients(setClients, setLoading);
+  };
+
+  const handleClientEdit = (client) => {
+    // console.log("Editing client:", client);
+
+    setDataForEdit(client);
+    setTimeout(() => setCreateClientModal(true), 100);
+  }
+
+  useEffect(() => {
+    fetchUserClients();
   }, []);
 
   return (
@@ -31,9 +47,9 @@ export default function Clients() {
               />
               <i className="fa fa-search px-3"></i>
             </div>
-            <Link to="/client/new" className="btn new-invoice-btn ms-2 ">
+            <div className="btn new-invoice-btn ms-2 " onClick={() => setCreateClientModal(true)} >
               <span className="">New Client</span>
-            </Link>
+            </div>
           </div>
         </div>
 
@@ -83,9 +99,7 @@ export default function Clients() {
                           <button
                             className="btn btn-primary btn-sm fa-regular fa-pen-to-square rounded-circle py-2"
                             onClick={() =>
-                              navigate(`/client/edit`, {
-                                state: { client },
-                              })
+                              handleClientEdit(client)
                             }
                           ></button>
                           <button
@@ -104,6 +118,18 @@ export default function Clients() {
           </div>
         )}
       </div>
+      <CustomModal
+        isOpen={createClientModal}
+        onClose={() => {
+          setCreateClientModal(false)
+          setDataForEdit(null);
+        }}
+      >
+        <CreateClient onClose={() => {
+          setCreateClientModal(false)
+          setDataForEdit(null);
+        }} fetchUserClients={fetchUserClients} existingClient={dataForEdit} location={"clients"} />
+      </CustomModal>
     </div>
   );
 }

@@ -8,9 +8,10 @@ import { getUserId } from "../../Helper";
 export default function GeneratedInvoice() {
   const { state: formData } = useLocation();
   const navigate = useNavigate();
+  const [creatingBill, setCreatingBill] = useState(false);
 
-  console.log("Generated Invoice Data:", formData);
-  
+  // console.log("Generated Invoice Data:", formData);
+
 
   // const [emailShare, setEmailShare] = useState("");
   // const handleInputEmailShare = (event) => {
@@ -64,6 +65,7 @@ export default function GeneratedInvoice() {
   const generatePdf = () => {
     const data = formData;
     if (!data) return;
+    setCreatingBill(true);
     data.user_id = getUserId();
     data.status = "active";
     console.log("✅ Final Data (JSON):", JSON.stringify(data, null, 2));
@@ -79,19 +81,31 @@ export default function GeneratedInvoice() {
         >
           <div className="d-flex justify-content-between">
             <div
-              className="btn-group"
+              className="btn-group gap-2"
               role="group"
               aria-label="Basic outlined example"
             >
               <button
                 type="button"
-                className="btn btn-outline-secondary active"
+                className="btn btn-outline-primary"
+                style={{
+                  fontWeight: "500",
+                  padding: "8px 20px",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                }}
               >
                 Preview
               </button>
               <button
                 type="button"
-                className="btn btn-outline-secondary active border-start"
+                className="btn btn-outline-primary"
+                style={{
+                  fontWeight: "500",
+                  padding: "8px 20px",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                }}
                 onClick={handleEditClick}
               >
                 Edit
@@ -99,10 +113,17 @@ export default function GeneratedInvoice() {
             </div>
             <button
               type="button"
-              className="btn btn-outline-secondary active border-start"
+              className="btn btn-outline-primary"
+              style={{
+                fontWeight: "500",
+                padding: "8px 20px",
+                borderRadius: "8px",
+                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+              }}
               onClick={generatePdf}
+              disabled={formData?.billName === "" || creatingBill}
             >
-              Create Bill
+              {creatingBill ? "Creating.." : "Create Bill"}
             </button>
           </div>
         </div>

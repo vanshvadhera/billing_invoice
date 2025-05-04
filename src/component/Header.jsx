@@ -1,19 +1,36 @@
-import $ from "jquery";
+import $, { get } from "jquery";
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { isAuthenticated } from "../../Helper";
+import { getUserId, isAuthenticated } from "../../Helper";
 // import logo from "../assets/images/innovartan_Logo.png";
 // import Button from "./Button";
 import Cookies from "js-cookie";
+import { getUserProfile } from "./ApiFunction";
 export default function Header() {
   const [isDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [isMobileMenuVisible, setIsMobileMenuVisible] = useState(false);
   const isNewInvoicePage = location.pathname === "/invoice/new-invoice" || location.pathname === "/invoice/preview-invoice" || "/invoice/generated-invoice";
   const [authStatus, setAuthStatus] = useState(isAuthenticated());
+
+  const user_id = Cookies.get("user_id");
+  const accessToken = Cookies.get("access_token");
+
+  useEffect(() => {
+    if (user_id && accessToken) {
+      setLoading(true)
+      getUserProfile(setLoading, setUser)
+    }
+  }, [user_id, accessToken]);
+
+  // console.log(user);
+
+
   const handleClickOutside = (event) => {
     if (
       dropdownRef.current &&
@@ -69,7 +86,7 @@ export default function Header() {
     setAuthStatus(false);
     navigate("/login");
   };
-  
+
 
   const toggleMobileMenu = () => {
     setIsMobileMenuVisible(!isMobileMenuVisible);
@@ -77,15 +94,14 @@ export default function Header() {
   return (
     <>
       <nav
-        className={`navbar py-4 flex-column mt-0 ${
-          isNewInvoicePage ? "" : "sticky-top"
-        } border-bottom border-2`}
+        className={`navbar py-4 flex-column mt-0 ${isNewInvoicePage ? "" : "sticky-top"
+          } border-bottom border-2`}
       >
         <div className="container align-items-center pe-lg-0 pe-md-auto pe-auto">
-          <Link to="/">
-            {/* <img src={logo} alt="" height="auto" className="logo-img" /> */}
-            <h4 className="text-white mb-0">Invoice</h4>
-          </Link>
+
+          {/* <img src={logo} alt="" height="auto" className="logo-img" /> */}
+          <h4 className="text-white mb-0">Invoice</h4>
+
 
           <span
             className="fa fa-bars d-lg-none d-block fs-3 text-white"
@@ -100,10 +116,10 @@ export default function Header() {
             <nav className="menu-box">
               <div className="upper-box">
                 <div className="nav-logo">
-                  <Link to={"/"}>
+                  {user?.isCodeSetup && <Link to={"/"}>
                     {/* <img src={logo} alt="" height="auto" className="logo-img" /> */}
                     <p>Invoice</p>
-                  </Link>
+                  </Link>}
                 </div>
                 <div className="close-btn" onClick={() => toggleMobileMenu()}>
                   <i className="icon fa fa-times"></i>
@@ -111,24 +127,29 @@ export default function Header() {
               </div>
 
               <ul className="navigation clearfix ps-0">
-                <li className="current">
+                {user?.isCodeSetup && <li className="current">
                   <Link to={"/"}>Invoice</Link>
-                </li>
+                </li>}
 
-                <li>
+                {user?.isCodeSetup && <li>
                   <Link to="/report">Reports</Link>
-                </li>
+                </li>}
 
-                <li>
+                {user?.isCodeSetup && <li>
                   <Link to="/items">Items</Link>
-                </li>
+                </li>}
 
-                <li>
+                {user?.isCodeSetup && <li>
                   <Link to="/clients"> Clients</Link>
-                </li>
+                </li>}
                 <li>
                   <Link to="/profile">Profile</Link>
                 </li>
+                {!user?.isCodeSetup && (
+                  <li className="nav-item">
+                    <p className="m-0 blink bg-red-500 px-2 rounded-2xl ">Profile Not Active</p>
+                  </li>
+                )}
                 <li>
                   {authStatus ? (
                     <Link onClick={handleLogout}>Logout</Link>
@@ -141,32 +162,37 @@ export default function Header() {
           </div>
 
           {/* desktop navbar */}
-          <div className="d-lg-block d-md-none d-none">
+          {user && <div className="d-lg-block d-md-none d-none">
             <ul className="d-flex list-unstyled align-items-center mb-0 main-nav">
               <li className="nav-item ">
-                <Link className="nav-link " to={"/"}>
+                {user?.isCodeSetup && <Link className="nav-link " to={"/"}>
                   Invoice
-                </Link>
+                </Link>}
               </li>
 
-              <li className="nav-item ">
+              {user?.isCodeSetup && <li className="nav-item ">
                 <Link className="nav-link" to="/report">Reports</Link>
-              </li>
-              <li className="nav-item ">
+              </li>}
+              {user?.isCodeSetup && <li className="nav-item ">
                 <Link className="nav-link " to="/items">
                   Items
                 </Link>
-              </li>
-              <li className="nav-item ">
+              </li>}
+              {user?.isCodeSetup && <li className="nav-item ">
                 <Link className="nav-link " to="/clients">
                   Clients
                 </Link>
-              </li>
+              </li>}
               <li className="nav-item ">
                 <Link className="nav-link " to="/profile">
                   Profile
                 </Link>
               </li>
+              {!user?.isCodeSetup && (
+                <li className="nav-item">
+                  <p className="m-0 blink bg-red-500 px-2 rounded-2xl ">Profile Not Active</p>
+                </li>
+              )}
 
               <li className="nav-item">
                 {authStatus ? (
@@ -180,7 +206,7 @@ export default function Header() {
                 )}
               </li>
             </ul>
-          </div>
+          </div>}
         </div>
       </nav>
     </>

@@ -69,11 +69,15 @@ export default function Profile() {
   const isEmailValid = emailExp.test(formData.email)
 
   const handleSubmit = (e) => {
+    let reloadSite = formData.isCodeSetup ? false : true
     e.preventDefault()
     console.log(formData)
     formData.isCodeSetup = formData.store_code ? true : false
     setIsSubmitting(true)
-    updateProfile(setIsSubmitting, formData)
+    updateProfile(setIsSubmitting, formData, reloadSite)
+    // if (reloadSite) {
+    //   window.location.reload()
+    // }
   }
 
   const accessToken = Cookies.get("access_token")

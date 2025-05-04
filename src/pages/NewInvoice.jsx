@@ -7,11 +7,12 @@ import {
   getLastInvoiceNumber,
   getUserProfile,
 } from "../component/ApiFunction";
-import ClientFormModal from "../component/ClientFormModal";
 import BillingShippingSection from "../component/BillingShippingSection";
 import FromBusinessSection from "../component/FromBusinessSection";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getUserId } from "../../Helper";
+import CustomModal from "../component/CustomModal";
+import CreateClient from "./client/CreateClient";
 
 export default function NewInvoice() {
   const [invoiceName, setInvoiceName] = useState("New Invoice");
@@ -20,7 +21,6 @@ export default function NewInvoice() {
   const [clients, setClients] = useState([]);
   const [selectedClient, setSelectedClient] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showClientModal, setShowClientModal] = useState(false);
   const [formData, setFormData] = useState({});
   const [isShipTo, setIsShipTo] = useState(false);
   const [copyBilling, setCopyBilling] = useState("yes");
@@ -60,6 +60,8 @@ export default function NewInvoice() {
   const [subTotal, setSubTotal] = useState(0);
   const [total, setTotal] = useState(0);
   const [balanceAmount, setBalanceAmount] = useState(0);
+  const [createClientModal, setCreateClientModal] = useState(false);
+  const [creatingbill, setCreatingBill] = useState(false);
 
   const hanldeDiscount = (data, type) => {
     // console.log("data", data, "type", type);
@@ -155,10 +157,7 @@ export default function NewInvoice() {
   // Fetching user profile and setting initial values
   useEffect(() => {
     getUserProfile(setLoading, setFormData);
-
-    console.log("editData", editData);
-
-
+    // console.log("editData", editData);
     if (editData) {
       console.log(editData);
       setSelectedClient({
@@ -212,12 +211,8 @@ export default function NewInvoice() {
     setSelectedClient(client);
 
     if (selectedOption.value === "new-client") {
-      setShowClientModal(true);
+      setCreateClientModal(true);
     }
-  };
-
-  const closeModal = () => {
-    setShowClientModal(false);
   };
 
   const fetchClients = () => getClients(setClients, setLoading);
@@ -358,6 +353,7 @@ export default function NewInvoice() {
   const generatePdf = () => {
     const data = getInvoiceFormData2(formRef, shipToFields, copyBilling);
     if (!data) return;
+    setCreatingBill(true);
     data.user_id = getUserId();
     data.status = "active";
     console.log("✅ Final Data (JSON):", data);
@@ -403,6 +399,11 @@ export default function NewInvoice() {
     return (amount * percentage) / 100;
   };
 
+  const handleNewClient = (clientData) => {
+    console.log("clientData", clientData);
+    setSelectedClient(clientData);
+  }
+
   return (
     <div className="container my-5">
       {loading ? (
@@ -415,12 +416,6 @@ export default function NewInvoice() {
         </>
       ) : (
         <>
-          <ClientFormModal
-            showClientModal={showClientModal}
-            closeModal={closeModal}
-            onSuccess={clients}
-          />
-
           <div className="row mx-2 flex-wrap">
             <div
               className="col-md-9  position-sticky top-0 z-3 py-2 px-0"
@@ -428,13 +423,19 @@ export default function NewInvoice() {
             >
               <div className="d-flex justify-content-between  ">
                 <div
-                  className="btn-group"
+                  className="btn-group gap-2"
                   role="group"
                   aria-label="Basic outlined example"
                 >
                   <button
                     type="button"
-                    className="btn btn-outline-secondary active"
+                    className="btn btn-outline-primary"
+                    style={{
+                      fontWeight: "500",
+                      padding: "8px 20px",
+                      borderRadius: "8px",
+                      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                    }}
                     onClick={handlePreviewClick}
                   >
                     Preview
@@ -442,7 +443,13 @@ export default function NewInvoice() {
 
                   <button
                     type="button"
-                    className="btn btn-outline-secondary active border-start"
+                    className="btn btn-outline-primary"
+                    style={{
+                      fontWeight: "500",
+                      padding: "8px 20px",
+                      borderRadius: "8px",
+                      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                    }}
                   >
                     Edit
                   </button>
@@ -450,10 +457,17 @@ export default function NewInvoice() {
 
                 <button
                   type="button"
-                  className={`btn btn-outline-secondary active border-start `}
+                  className="btn btn-outline-primary"
+                  style={{
+                    fontWeight: "500",
+                    padding: "8px 20px",
+                    borderRadius: "8px",
+                    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                  }}
                   onClick={generatePdf}
+                  disabled={selectedClient === null || creatingbill}
                 >
-                  Create Bill
+                  {creatingbill ? "Creating.." : "Create Bill"}
                 </button>
               </div>
             </div>
@@ -793,6 +807,16 @@ export default function NewInvoice() {
           </div>
         </>
       )}
+      <CustomModal
+        isOpen={createClientModal}
+        onClose={() => {
+          setCreateClientModal(false)
+        }}
+      >
+        <CreateClient onClose={() => {
+          setCreateClientModal(false)
+        }} location={"invoice"} handleNewClient={handleNewClient} />
+      </CustomModal>
     </div>
   );
 }

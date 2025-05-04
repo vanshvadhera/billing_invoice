@@ -67,13 +67,12 @@ export const deleteInvoice = (invoice_id, setInvoices) => {
 };
 
 // Add or Update Client
-export const addOrUpdateClient = (clientData, navigate, setLoading) => {
+export const addOrUpdateClient = (clientData, onSuccess, setLoading) => {
   axios
     .post(`${baseUrl}/clients/add-update`, clientData)
-    .then(() => {
-      setLoading(false);
-      showSuccess("Client has been saved successfully");
-      navigate("/clients");
+    .then((res) => {
+      const clientData = res.data.data;
+      onSuccess(clientData);
     })
     .catch(() => {
       setLoading(false);
@@ -137,11 +136,14 @@ export const getUserProfile = (setLoading, setFormData) => {
 };
 
 // Update Profile
-export const updateProfile = (setIsSubmitting, formData) => {
+export const updateProfile = (setIsSubmitting, formData, reloadSite) => {
   axios
     .post(`${baseUrl}/user/update-profile`, formData)
     .then(() => {
       showSuccess("Profile has been updated");
+      if (reloadSite) {
+        window.location.reload();
+      }
     })
     .catch((err) => {
       const msg = err.response?.data?.msg || "Update failed";
@@ -227,6 +229,7 @@ export const loginUser = (email, password, setLoading, setAlert, navigate) => {
     .then((res) => {
       const { accessToken, refreshToken } = res.data.data.tokenData;
       const userId = res.data.data.user_id;
+      const isCodeSetup = res?.data?.data?.isCodeSetup;
 
       Cookies.set("access_token", accessToken, { expires: 1 });
       Cookies.set("refresh_token", refreshToken, { expires: 1 });
@@ -235,7 +238,13 @@ export const loginUser = (email, password, setLoading, setAlert, navigate) => {
       setAlert({ type: "success", message: "Login successful!" });
       setTimeout(() => {
         setAlert(null);
-        navigate("/");
+        if (isCodeSetup) {
+          console.log("Code setup is true");
+
+          navigate("/");
+        } else {
+          navigate("/profile");
+        }
       }, 2000);
     })
     .catch(() => {
@@ -255,11 +264,18 @@ export const registerUser = (data, setAlert, navigate, setLoading) => {
       Cookies.set("access_token", res.data.data.accessToken, { expires: 7 });
       Cookies.set("refresh_token", res.data.data.refreshToken, { expires: 7 });
       Cookies.set("user_id", res.data.data.user_id, { expires: 7 });
+      const isCodeSetup = res?.data?.data?.isCodeSetup;
 
       setAlert({ type: "success", message: "User created successfully" });
       setTimeout(() => {
         setAlert(null);
-        navigate("/");
+        if (isCodeSetup) {
+          console.log("Code setup is true");
+
+          navigate("/");
+        } else {
+          navigate("/profile");
+        }
       }, 2000);
     })
     .catch((err) => {

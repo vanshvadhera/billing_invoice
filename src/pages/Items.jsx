@@ -27,7 +27,7 @@ export default function Items() {
   }, []);
 
   console.log("Items:", items);
-  
+
 
   return (
     <div className="container">
@@ -122,11 +122,17 @@ export default function Items() {
       </div>
       <CustomModal
         isOpen={createItemModal}
-        onClose={() => setCreateItemModal(false)}
+        onClose={() => {
+          setCreateItemModal(false)
+          setDataForEdit(null)
+        }}
       >
-        <CreateItem onClose={() => setCreateItemModal(false)} fetchUserItems={fetchUserItems} existingItem={dataForEdit} location={"items"} />
+        <CreateItem onClose={() => {
+          setCreateItemModal(false)
+          setDataForEdit(null)
+        }} fetchUserItems={fetchUserItems} existingItem={dataForEdit} location={"items"} />
       </CustomModal>
-    </div>
+    </div >
   );
 }
 

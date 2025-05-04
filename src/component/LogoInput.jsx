@@ -11,9 +11,17 @@ export default function LogoInput({ onUploadSuccess, preview }) {
 
   const handleChange = (e) => {
     const selected = e.target.files[0];
-    if (selected) {
+    const validTypes = ["image/jpeg", "image/png"];
+    if (selected && validTypes.includes(selected.type)) {
       setFile(selected);
       setFileName(selected.name);
+    } else {
+      alert("Only JPG and PNG files are allowed.");
+      setFile(null);
+      setFileName("");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -22,7 +30,7 @@ export default function LogoInput({ onUploadSuccess, preview }) {
     setIsLoading(true);
 
     try {
-      const fileUrl = await uploadFile(file); 
+      const fileUrl = await uploadFile(file);
       if (onUploadSuccess) {
         onUploadSuccess(fileUrl);
       }

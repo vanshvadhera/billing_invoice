@@ -87,7 +87,7 @@ export default function Invoice() {
                     <th>Invoice No.</th>
                     <th>Client Name</th>
                     <th>Issued Date</th>
-                    <th>Balance Due</th>
+                    <th>Bill Amount</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -101,7 +101,7 @@ export default function Invoice() {
                       <td>{invoice.invoiceNumber}</td>
                       <td>{invoice.billName}</td>
                       <td>{invoice.date}</td>
-                      <td>{invoice.calculatedTotal}</td>
+                      <td>{invoice.balanceAmount}</td>
                       <td>
                         <div className="d-flex justify-content-center gap-3 align-items-center position-relative">
                           <button
@@ -119,9 +119,9 @@ export default function Invoice() {
                               deleteInvoice(invoice.invoice_id, setInvoices)
                             }
                           ></button>
-                          <i className="fa-solid fa-ellipsis-vertical fs-5 pointer-cursor"></i>
+                          {/* <i className="fa-solid fa-ellipsis-vertical fs-5 pointer-cursor"></i> */}
 
-                          <div className="dropdown-menu invoice-dropdown">
+                          {/* <div className="dropdown-menu invoice-dropdown">
                             <button className="dropdown-item py-2 d-flex justify-content-between align-items-center">
                               Mark Paid{" "}
                               <i className="fa-solid fa-arrow-right"></i>
@@ -142,7 +142,7 @@ export default function Invoice() {
                               Delete{" "}
                               <i className="ms-auto fa-solid fa-trash-can"></i>
                             </button>
-                          </div>
+                          </div> */}
                         </div>
                       </td>
                     </tr>

@@ -14,13 +14,13 @@ export default function ClientFormModal({ showClientModal, closeModal, onSuccess
     } else {
       document.body.style.overflow = "auto";
     }
-  
+
     // Cleanup in case component unmounts
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [showClientModal]);
-  
+
   return (
     showClientModal && (
       <>

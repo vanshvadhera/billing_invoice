@@ -282,9 +282,21 @@ const InvoiceGenerator = (props) => {
             >
               {({ loading }) =>
                 loading ? (
-                  <button className="btn btn-outline-secondary active border-start" disabled>Preparing PDF...</button>
+                  <button className="btn btn-outline-primary"
+                    style={{
+                      fontWeight: "500",
+                      padding: "8px 20px",
+                      borderRadius: "8px",
+                      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                    }} disabled>Preparing PDF...</button>
                 ) : (
-                  <button className="btn btn-outline-secondary active border-start">Download PDF</button>
+                  <button className="btn btn-outline-primary"
+                    style={{
+                      fontWeight: "500",
+                      padding: "8px 20px",
+                      borderRadius: "8px",
+                      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                    }}>Download PDF</button>
                 )
               }
             </PDFDownloadLink>
