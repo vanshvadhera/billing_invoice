@@ -95,7 +95,7 @@ const InvoicePDF = ({
       <Document>
         <Page size="A4" style={styles.page}>
           <View style={styles.header}>
-            <Image src={logoUrl} style={{ width: 100, height: 100, objectFit: "cover" }} />
+            <Image src={`${logoUrl}?t=${Date.now()}`} style={{ width: 100, height: 100, objectFit: "cover" }} />
             <View>
               <Text style={styles.bold}>{invoiceData?.invoiceName}</Text>
               <Text>Invoice No: {invoiceData?.invoiceNumber}</Text>
@@ -216,7 +216,7 @@ const InvoicePDF = ({
           {signature && (
             <View style={styles.signature}>
               <Image
-                src={signature}
+                src={`${signature}?t=${Date.now()}`}
                 alt="Signature"
                 style={{ width: 100, height: 50 }}
               />
