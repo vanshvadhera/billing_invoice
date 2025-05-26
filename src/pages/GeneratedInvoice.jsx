@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import InvoicePdf from "../component/InvoicePdf";
 import { addUpdateInvoice } from "../component/ApiFunction";
 import { getUserId } from "../../Helper";
+import InvoicePdf2 from "../component/InvoicePdf2";
 
 export default function GeneratedInvoice() {
   const { state: formData } = useLocation();
@@ -375,7 +376,8 @@ export default function GeneratedInvoice() {
               </div>
             </div>
           </div> */}
-          <InvoicePdf formData={formData} />
+          <InvoicePdf2 formData={formData} />
+          {/* <InvoicePdf formData={formData} /> */}
         </div>
 
         {/* <div className="col-md-3 mt-lg-0 mt-md-2 mt-3">
