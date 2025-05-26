@@ -32,7 +32,7 @@ export default function NewPageInput({
           name={name}
           value={value} // Controlled input
           onChange={change ? change : undefined} // Optional change handler
-          className={`py-2 px-2 border border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100 ${className}`} // Additional class support
+          className={`py-2 px-2 border-1 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100 ${className}`} // Additional class support
           placeholder={placeholder || ""}
           required
           readOnly={readOnly}

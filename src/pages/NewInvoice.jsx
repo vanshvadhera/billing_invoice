@@ -482,7 +482,7 @@ export default function NewInvoice() {
                     value={invoiceName}
                     name="invoiceName"
                     onChange={handleInoivceTitleChange}
-                    className="py-1 px-2 w-50 border-2 border-secondary-subtle input-field rounded"
+                    className="py-1 px-2 w-50 border-1 border-secondary-subtle input-field rounded"
                   />
                 </div>
                 <div className="col-md-6 ">
@@ -531,7 +531,8 @@ export default function NewInvoice() {
                           value={currentDate}
                           onChange={(e) => setCurrentDate(e.target.value)}
                           name="date"
-                          className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                          max={new Date().toISOString().split("T")[0]}
+                          className="py-2 px-2 border-1 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                         />
                       </div>
                     </div>
@@ -730,7 +731,7 @@ export default function NewInvoice() {
                     onChange={(e) => {
                       handleTax(e.target.value, "type");
                     }}
-                    className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                    className="py-2 px-2 border-1 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                   >
                     <option value="none">None</option>
                     <option value="CGST_SGST">CGST & SGST</option>
@@ -755,7 +756,7 @@ export default function NewInvoice() {
                         onChange={(e) => handleTax(e.target.value, "other")}
                         placeholder="0.000%"
                         onFocus={handleFocus}
-                        className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                        className="py-2 px-2 border-1 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                       />
                     </div>
                   </div>
@@ -776,7 +777,7 @@ export default function NewInvoice() {
                   <select
                     value={discount?.discountType}
                     onChange={(e) => hanldeDiscount(e.target.value, "type")}
-                    className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                    className="py-2 px-2 border-1 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                   >
                     <option value="none">None</option>
                     <option value="percent">Percent</option>
@@ -798,7 +799,7 @@ export default function NewInvoice() {
                       name="discountPercentage"
                       onChange={(e) => hanldeDiscount(e.target.value, discount?.discountType === "percent" ? "percent" : "flat")}
                       placeholder={discount?.discountType === "percent" ? "0.000%" : "0.00"}
-                      className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
+                      className="py-2 px-2 border-1 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100"
                     />
                   </div>
                 </div>
