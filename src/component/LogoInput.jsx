@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import FileUploadModal from "./FileUploadModal";
 import { uploadFile } from "./ApiFunction";
 
-export default function LogoInput({ onUploadSuccess, preview }) {
+export default function LogoInput({ onUploadSuccess, preview, placeHolder }) {
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState(null);
   const [statePreview, setStatePreview] = useState(null);
@@ -56,13 +56,13 @@ export default function LogoInput({ onUploadSuccess, preview }) {
     <FileUploadModal
       modalId="logoModal"
       closeButtonId="closeLogoModalBtn"
-      title="Upload Logo"
+      title={`Upload ${placeHolder}`}
       fileName={fileName}
       setFile={setFile}
       handleChange={handleChange}
       handleUpload={handleUpload}
       isLoading={isLoading}
-      buttonLabel="Logo"
+      buttonLabel={placeHolder}
       preview={statePreview || preview}
       accept="image/*"
       fileInputRef={fileInputRef}

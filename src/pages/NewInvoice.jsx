@@ -690,11 +690,12 @@ export default function NewInvoice() {
                   </div>
                   <textarea
                     name="additionalDetails"
-                    className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100 mt-2 resize-none"
+                    className="py-2 px-2 border-1 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100 mt-2 resize-none"
                     placeholder="Notes - any relevant information not covered, additional terms and conditions"
                     rows="6"
-                    value={additionalNotes}
-                    onChange={(e) => setAdditionalNotes(e.target.value)}
+                    value={formData?.notes}
+                    disabled={true}
+                    // onChange={(e) => setAdditionalNotes(e.target.value)}
                   />
                 </div>
 

@@ -24,6 +24,7 @@ export default function Profile() {
     signature_logo: "",
     store_code: "",
     isCodeSetup: false,
+    notes: "",
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -190,19 +191,52 @@ export default function Profile() {
                 </div>
               </div>
 
-              <div className="flex flex-row mt-4 gap-10">
-                <SignatureCanvas
-                  onUploadSuccess={handleSignatureUpload}
-                  preview={formData?.signature_logo}
+              <div>
+                <div className="mt-3">
+                  <label className="form-label text-capitalize">{"Notes"}</label>
+                </div>
+                <textarea
+                  name="notes"
+                  className="py-2 px-2 border-1 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100 resize-none"
+                  placeholder="Notes - any relevant information not covered, additional terms and conditions"
+                  rows="6"
+                  value={formData?.notes}
+                  onChange={handleInputChange}
                 />
-                <div>
+              </div>
 
+              <div className="flex flex-row mt-4 gap-10">
+                <div>
+                  <LogoInput
+                    onUploadSuccess={handleSignatureUpload}
+                    preview={formData?.signature_logo}
+                    placeHolder="Signature"
+                  />
+                </div>
+                <div>
                   <LogoInput
                     onUploadSuccess={handleUploadSuccess}
                     preview={formData?.logo}
+                    placeHolder="Logo"
                   />
                 </div>
               </div>
+
+              {/* <div className="">
+                <div className={``}>
+                  <label htmlFor="name" className="text-dark fs-o8">
+                    Notes
+                  </label>
+                </div>
+                <textarea
+                  name="additionalDetails"
+                  className="py-2 px-2 border-2 border-secondary-subtle input-field rounded fs-o8 fw-medium text-secondary w-100 mt-2 resize-none"
+                  placeholder="Notes - any relevant information not covered, additional terms and conditions"
+                  rows="6"
+                  value={additionalNotes}
+                  // onChange={(e) => setAdditionalNotes(e.target.value)}
+                />
+              </div> */}
             </div>
           </div>
 
@@ -227,6 +261,7 @@ export default function Profile() {
                   </div>
                 ))}
               </div>
+
             </div>
           </div>
 
