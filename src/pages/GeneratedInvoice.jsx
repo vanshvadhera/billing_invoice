@@ -376,8 +376,8 @@ export default function GeneratedInvoice() {
               </div>
             </div>
           </div> */}
-          <InvoicePdf2 formData={formData} />
-          {/* <InvoicePdf formData={formData} /> */}
+          {/* <InvoicePdf2 formData={formData} /> */}
+          <InvoicePdf formData={formData} />
         </div>
 
         {/* <div className="col-md-3 mt-lg-0 mt-md-2 mt-3">

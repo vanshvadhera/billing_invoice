@@ -736,7 +736,7 @@ export default function NewInvoice() {
                     <option value="none">None</option>
                     <option value="CGST_SGST">CGST & SGST</option>
                     <option value="IGST">IGST</option>
-                    <option value="other">Other</option>
+                    {/* <option value="other">Other</option> */}
                   </select>
                 </div>
               </div>

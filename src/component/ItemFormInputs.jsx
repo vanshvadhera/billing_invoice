@@ -19,7 +19,7 @@ export default function ItemFormInputs({
         <input name="item_name" value={formData.item_name} onChange={handleChange} className="form-control" required />
       </div>
       <div className="mb-3">
-        <label>Item Code</label>
+        <label>HSN Code</label>
         <input name="item_code" value={formData.item_code} onChange={handleChange} className="form-control" />
       </div>
       <div className="mb-3">
@@ -29,6 +29,20 @@ export default function ItemFormInputs({
       <div className="mb-3">
         <label>Unit Measure</label>
         <div className="d-flex gap-3">
+          <div className="form-check">
+            <input
+              type="radio"
+              id="ltr"
+              name="unit_measure"
+              value="ltr"
+              checked={formData.unit_measure === "ltr"}
+              onChange={handleChange}
+              className="form-check-input"
+            />
+            <label className="form-check-label" htmlFor="ltr">
+              ltr
+            </label>
+          </div>
           <div className="form-check">
             <input
               type="radio"
@@ -60,15 +74,15 @@ export default function ItemFormInputs({
           <div className="form-check">
             <input
               type="radio"
-              id="pcs"
+              id="nos"
               name="unit_measure"
-              value="pcs"
-              checked={formData.unit_measure === "pcs"}
+              value="nos"
+              checked={formData.unit_measure === "nos"}
               onChange={handleChange}
               className="form-check-input"
             />
-            <label className="form-check-label" htmlFor="pcs">
-              pcs
+            <label className="form-check-label" htmlFor="nos">
+              nos
             </label>
           </div>
           <div className="form-check">
