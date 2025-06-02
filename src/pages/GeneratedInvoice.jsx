@@ -5,6 +5,8 @@ import InvoicePdf from "../component/InvoicePdf";
 import { addUpdateInvoice } from "../component/ApiFunction";
 import { getUserId } from "../../Helper";
 import InvoicePdf2 from "../component/InvoicePdf2";
+import InvoicePdf3 from "../component/InvoicePdf3";
+import InvoicePdf4 from "../component/InvoicePdf4/InvoicePdf4";
 
 export default function GeneratedInvoice() {
   const { state: formData } = useLocation();
@@ -376,7 +378,8 @@ export default function GeneratedInvoice() {
               </div>
             </div>
           </div> */}
-          <InvoicePdf2 formData={formData} />
+          {/* <InvoicePdf3 formData={formData} /> */}
+          <InvoicePdf4 formData={formData} />
           {/* <InvoicePdf formData={formData} /> */}
         </div>
 
