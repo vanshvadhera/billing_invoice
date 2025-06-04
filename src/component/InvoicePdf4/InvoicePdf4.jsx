@@ -4,6 +4,7 @@ import { useState } from "react"
 import Invoice4Header from "./Invoice4Header"
 import Invoice4Table from "./Invoice4Table"
 import Invoice4Tax from "./Invoice4Tax"
+import Invoice4ContinueFooter from "./Invoice4ContinueFooter"
 
 // Create styles
 const styles = StyleSheet.create({
@@ -326,6 +327,7 @@ const TaxInvoicePDF = () => (
           ))}
         </View>
 
+        {/* Total, Discount, CGST, SGST Rows Only On Last page */}
         <View style={styles.totalRow} >
           <View style={styles.row} wrap={false}>
             <Text style={styles.tableCellSlNo}></Text>
@@ -371,50 +373,8 @@ const TaxInvoicePDF = () => (
           </View>
         </View>
 
-        {/* Empty rows to match PDF layout */}
-        {/* {Array.from({ length: 3 }, (_, index) => (
-          <View key={`empty-${index}`} style={styles.row} wrap={false}>
-            <Text style={styles.tableCellSlNo}></Text>
-            <Text style={styles.tableCellDescription}></Text>
-            <Text style={styles.tableCellHSN}></Text>
-            <Text style={styles.tableCellGSTQuantity}></Text>
-            <Text style={styles.tableCellRate}></Text>
-            <Text style={styles.tableCellRatePer}></Text>
-            <Text style={styles.tableCellAmount}></Text>
-          </View>
-        ))} */}
 
-        {/* Total row */}
-        {/* <View style={styles.row} wrap={false}>
-          <Text style={[styles.tableCellSlNo, { flex: 5, borderRightWidth: 0 }]}></Text>
-          <Text style={[styles.tableCellRate, { flex: 1, borderRightWidth: 0, textAlign: "left" }]}>Total:</Text>
-          <Text style={styles.tableCellAmount}>{invoiceData.calculations.subTotal.toFixed(2)}</Text>
-        </View> */}
-
-        {/* Discount Row */}
-        {/* <View style={styles.row} wrap={false}>
-          <Text style={[styles.tableCellSlNo, { flex: 5, borderRightWidth: 0 }]}></Text>
-          <Text style={[styles.tableCellRate, { flex: 1, borderRightWidth: 0, textAlign: "left" }]}>
-            Discount Given
-          </Text>
-          <Text style={styles.tableCellAmount}>{invoiceData.calculations.discount.toFixed(2)}</Text>
-        </View> */}
-
-        {/* CGST Row */}
-        {/* <View style={styles.row} wrap={false}>
-          <Text style={[styles.tableCellSlNo, { flex: 5, borderRightWidth: 0 }]}></Text>
-          <Text style={[styles.tableCellRate, { flex: 1, borderRightWidth: 0, textAlign: "left" }]}>CGST</Text>
-          <Text style={styles.tableCellAmount}>{invoiceData.calculations.cgst.toFixed(2)}</Text>
-        </View> */}
-
-        {/* SGST Row */}
-        {/* <View style={styles.row} wrap={false}>
-          <Text style={[styles.tableCellSlNo, { flex: 5, borderRightWidth: 0 }]}></Text>
-          <Text style={[styles.tableCellRate, { flex: 1, borderRightWidth: 0, textAlign: "left" }]}>SGST</Text>
-          <Text style={styles.tableCellAmount}>{invoiceData.calculations.sgst.toFixed(2)}</Text>
-        </View> */}
-
-        {/* Final Total Row */}
+        {/* Final Total Row Only on Last Page */}
         <View style={[styles.row, { borderBottomWidth: 0, borderTopWidth: 1, borderRightWidth: 1 }]} wrap={false}>
           <Text style={[styles.tableCellSlNo, { flex: 5, borderRightWidth: 0 }]}></Text>
           <Text
@@ -428,62 +388,23 @@ const TaxInvoicePDF = () => (
         </View>
       </View>
 
-      {/* Amount in Words */}
+      {/* Continue Footer if items more than 15 */}
+      <Invoice4ContinueFooter />
+
+      {/* Amount in Words Only on Last Page */}
       <View style={[styles.section, { borderTopWidth: 0, borderBottomWidth: 0 }]}>
         <Text style={styles.bold}>Amount Chargeable (in words): {invoiceData.amountInWords}</Text>
       </View>
 
-      {/* Tax Table */}
-      {/* <View style={[styles.table, { borderTopWidth: 0 }]}>
-        <View style={[styles.row, styles.tableHeader]}>
-          <Text style={styles.taxTableCell}>Taxable Value</Text>
-          <Text style={styles.taxTableCell}>Central Tax</Text>
-          <Text style={styles.taxTableCell}>State Tax</Text>
-          <Text style={styles.taxTableLastCell}>Total Tax Amount</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.taxTableCell}>{invoiceData.calculations.taxableValue.toFixed(2)}</Text>
-          <View style={[styles.taxTableCell, { padding: 0 }]}>
-            <View style={styles.taxTableNestedRow}>
-              <Text style={styles.taxRateAmountCell}>Rate</Text>
-              <Text style={styles.taxRateAmountCell}>Amount</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={styles.taxRateAmountCell}>9%</Text>
-              <Text style={styles.taxRateAmountCell}>{invoiceData.calculations.cgst.toFixed(2)}</Text>
-            </View>
-          </View>
-          <View style={[styles.taxTableCell, { padding: 0 }]}>
-            <View style={styles.taxTableNestedRow}>
-              <Text style={styles.taxRateAmountCell}>Rate</Text>
-              <Text style={styles.taxRateAmountCell}>Amount</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={styles.taxRateAmountCell}>9%</Text>
-              <Text style={styles.taxRateAmountCell}>{invoiceData.calculations.sgst.toFixed(2)}</Text>
-            </View>
-          </View>
-          <Text style={styles.taxTableLastCell}>
-            {(invoiceData.calculations.cgst + invoiceData.calculations.sgst).toFixed(2)}
-          </Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.taxTableCell}>{invoiceData.calculations.taxableValue.toFixed(2)}</Text>
-          <Text style={styles.taxTableCell}>{invoiceData.calculations.cgst.toFixed(2)}</Text>
-          <Text style={styles.taxTableCell}>{invoiceData.calculations.sgst.toFixed(2)}</Text>
-          <Text style={styles.taxTableLastCell}>
-            {(invoiceData.calculations.cgst + invoiceData.calculations.sgst).toFixed(2)}
-          </Text>
-        </View>
-      </View> */}
-
+      {/* Tax Section Only on Last Page */}
       <Invoice4Tax />
 
+      {/* Tax Amount in Words Only on Last Page */}
       <View style={[styles.section, { borderBottomWidth: 1 }]}>
         <Text style={styles.bold}>Tax Amount (in words): {invoiceData.taxAmountInWords}</Text>
       </View>
 
-      {/* Declaration and Bank Details */}
+      {/* Declaration and Bank Details on each page */}
       <View style={styles.declarationSection}>
         <View style={styles.leftColumn}>
           <Text style={styles.bold}>Declaration</Text>
@@ -500,7 +421,7 @@ const TaxInvoicePDF = () => (
         </View>
       </View>
 
-      {/* Signature Section */}
+      {/* Signature Section on each page */}
       <View style={styles.signatureSection}>
         <Text style={styles.bold}>For {invoiceData.seller.name}</Text>
         <Text style={{ marginTop: 30 }}>Authorised Signatory</Text>
