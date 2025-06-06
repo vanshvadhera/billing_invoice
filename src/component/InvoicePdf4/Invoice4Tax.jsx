@@ -113,46 +113,57 @@ const styles = StyleSheet.create({
     },
 })
 
-const Invoice4Tax = () => {
-    const TaxTable = () => {
+const Invoice4Tax = ({ formData }) => {
+    const TaxTable = ({ formData }) => {
         return (
             <View style={[styles.table, { borderTopWidth: 0 }]}>
                 <View style={[styles.row, styles.tableHeader]}>
                     <Text style={[styles.cell, styles.textCenter]}>Taxable Value</Text>
-                    <Text style={[styles.cell, styles.textCenter]}>Central Tax</Text>
-                    <Text style={[styles.cell, styles.textCenter]}>State Tax</Text>
+                    {formData?.tax?.taxType === "IGST" && <Text style={[styles.cell, styles.textCenter]}>Integrated Tax</Text>}
+                    {formData?.tax?.taxType !== "IGST" && <Text style={[styles.cell, styles.textCenter]}>Central Tax</Text>}
+                    {formData?.tax?.taxType !== "IGST" && <Text style={[styles.cell, styles.textCenter]}>State Tax</Text>}
                     <Text style={[styles.lastCell, styles.textCenter]}>Total Tax Amount</Text>
                 </View>
                 <View style={styles.row}>
-                    <Text style={[styles.cell, styles.textCenter]}>8600.00</Text>
-                    <View style={styles.cell}>
+                    <Text style={[styles.cell, styles.textCenter]}>{(formData?.subTotal - Number(formData?.totalDiscount))?.toFixed(2)}</Text>
+                    {formData?.tax?.taxType === "IGST" && <View style={styles.cell}>
+                        <View style={{ flexDirection: "row" }}>
+                            <Text style={{ flex: 1, textAlign: "center" }}>Rate</Text>
+                            <Text style={{ flex: 1, textAlign: "center" }}>Amount</Text>
+                        </View>
+                        <View style={{ flexDirection: "row" }}>
+                            <Text style={{ flex: 1, textAlign: "center" }}>18%</Text>
+                            <Text style={{ flex: 1, textAlign: "center" }}>{formData?.totalTax?.toFixed(2)}</Text>
+                        </View>
+                    </View>}
+                    {formData?.tax?.taxType !== "IGST" && <View style={styles.cell}>
                         <View style={{ flexDirection: "row" }}>
                             <Text style={{ flex: 1, textAlign: "center" }}>Rate</Text>
                             <Text style={{ flex: 1, textAlign: "center" }}>Amount</Text>
                         </View>
                         <View style={{ flexDirection: "row" }}>
                             <Text style={{ flex: 1, textAlign: "center" }}>9%</Text>
-                            <Text style={{ flex: 1, textAlign: "center" }}>504.00</Text>
+                            <Text style={{ flex: 1, textAlign: "center" }}>{(formData?.totalTax / 2)?.toFixed(2)}</Text>
                         </View>
-                    </View>
-                    <View style={styles.cell}>
+                    </View>}
+                    {formData?.tax?.taxType !== "IGST" && <View style={styles.cell}>
                         <View style={{ flexDirection: "row" }}>
                             <Text style={{ flex: 1, textAlign: "center" }}>Rate</Text>
                             <Text style={{ flex: 1, textAlign: "center" }}>Amount</Text>
                         </View>
                         <View style={{ flexDirection: "row" }}>
                             <Text style={{ flex: 1, textAlign: "center" }}>9%</Text>
-                            <Text style={{ flex: 1, textAlign: "center" }}>504.00</Text>
+                            <Text style={{ flex: 1, textAlign: "center" }}>{(formData?.totalTax / 2)?.toFixed(2)}</Text>
                         </View>
-                    </View>
-                    <Text style={[styles.lastCell, styles.textCenter]}>1008.00</Text>
+                    </View>}
+                    <Text style={[styles.lastCell, styles.textCenter]}>{formData?.totalTax?.toFixed(0)}</Text>
                 </View>
             </View>
         )
     }
 
     return (
-        <TaxTable />
+        <TaxTable formData={formData} />
     )
 }
 

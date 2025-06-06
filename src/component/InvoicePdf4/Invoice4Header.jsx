@@ -74,40 +74,41 @@ const styles = StyleSheet.create({
     },
 })
 
-const InvoiceHeader = ({ invoiceData }) => (
+const InvoiceHeader = ({ formData }) => (
     <>
         <Text style={styles.header}>TAX INVOICE</Text>
         <View style={styles.companySection}>
             <View style={styles.leftColumn}>
                 <View style={styles.companyNameSection} >
-                    <Text style={styles.bold}>{invoiceData.seller.name}</Text>
-                    <Text>{invoiceData.seller.address}</Text>
-                    <Text>GSTIN/UIN: {invoiceData.seller.gstin}</Text>
-                    <Text>State Name: {invoiceData.seller.state}</Text>
-                    <Text>Contact: {invoiceData.seller.contact}</Text>
+                    <Text style={styles.bold}>{formData?.businessName}</Text>
+                    <Text>{formData?.businessAddress}</Text>
+                    <Text>GSTIN/UIN: {"--"}</Text>
+                    <Text>Email: {formData?.businessEmail}</Text>
+                    <Text>Contact: {formData?.businessNumber}</Text>
                 </View>
                 {/* Consignee Section */}
                 <View style={[styles.section, styles.companyNameSection, { marginTop: "-2px", paddingBottom: "10px" }]}>
                     <Text style={styles.bold}>Consignee (Ship to)</Text>
-                    <Text style={styles.bold}>{invoiceData.consignee.name}</Text>
-                    <Text>{invoiceData.consignee.address}</Text>
-                    <Text>GSTIN/UIN: {invoiceData.consignee.gstin}</Text>
-                    <Text style={{ marginBottom: "5px" }}>State Name: {invoiceData.consignee.state}</Text>
+                    <Text style={styles.bold}>{formData?.shipToName}</Text>
+                    <Text>{formData?.shipToAddress}</Text>
+                    <Text>GSTIN/UIN: {formData?.shipToGst}</Text>
+                    <Text>Email: {formData?.shipToEmail}</Text>
+                    <Text style={{ marginBottom: "5px" }}>Contact: {formData?.shipToMobile}</Text>
                 </View>
                 {/* Buyer Section */}
                 <View style={[styles.section, styles.companyNameSection, { marginTop: "-12px", borderBottomWidth: 1 }]}>
                     <Text style={styles.bold}>Buyer (Bill to)</Text>
-                    <Text style={styles.bold}>{invoiceData.buyer.name}</Text>
-                    <Text>{invoiceData.buyer.address}</Text>
-                    <Text>GSTIN/UIN: {invoiceData.buyer.gstin}</Text>
-                    <Text>State Name: {invoiceData.buyer.state}</Text>
-                    <Text>Place of Supply: {invoiceData.buyer.placeOfSupply}</Text>
+                    <Text style={styles.bold}>{formData?.billName}</Text>
+                    <Text>{formData?.billAddress}</Text>
+                    <Text>GSTIN/UIN: {formData?.gst_no}</Text>
+                    <Text>Email: {formData?.billEmail}</Text>
+                    <Text>Contact: {formData?.billMobile}</Text>
                 </View>
             </View>
             <View style={styles.rightColumn}>
                 <View style={styles.row}>
-                    <Text style={[styles.cell, styles.bold]}>Invoice No: {invoiceData.invoice.number}</Text>
-                    <Text style={[styles.lastCell, styles.bold]}>Dated: {invoiceData.invoice.date}</Text>
+                    <Text style={[styles.cell, styles.bold]}>Invoice No: {formData?.invoiceNumber}</Text>
+                    <Text style={[styles.lastCell, styles.bold]}>Dated: {formData?.date}</Text>
                 </View>
                 <View style={styles.row}>
                     <Text style={styles.cell}>Delivery Note</Text>
@@ -127,16 +128,16 @@ const InvoiceHeader = ({ invoiceData }) => (
                 </View>
                 <View style={styles.TODRow}>
                     <Text style={styles.bold}>Terms of Delivery:</Text>
-                    <Text style={{ marginTop: "4px" }}>{invoiceData.invoice.termsOfDelivery}</Text>
+                    <Text style={{ marginTop: "4px" }}></Text>
                 </View>
             </View>
         </View>
     </>
 )
 
-const Invoice4Header = ({ invoiceData }) => {
+const Invoice4Header = ({ formData }) => {
     return (
-        <InvoiceHeader invoiceData={invoiceData} />
+        <InvoiceHeader formData={formData} />
     )
 }
 

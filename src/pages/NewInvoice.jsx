@@ -40,6 +40,9 @@ export default function NewInvoice() {
     },
   ]);
 
+  // console.log("formData", formData);
+  
+
   const navigate = useNavigate();
   const location = useLocation();
   const editData = location.state || null;
@@ -159,7 +162,7 @@ export default function NewInvoice() {
     getUserProfile(setLoading, setFormData);
     // console.log("editData", editData);
     if (editData) {
-      console.log(editData);
+      // console.log(editData);
       setSelectedClient({
         name: editData?.billName,
         email: editData?.billEmail,
@@ -305,6 +308,7 @@ export default function NewInvoice() {
       billMobile: selectedClient?.mobile_number || "",
       billName: selectedClient?.name || "",
       gst_no: selectedClient?.gst_no || "",
+      notes: formData?.notes || "",
       businessAddress: formData?.address || "",
       businessEmail: formData?.email || "",
       businessName: formData?.companyName || "",
@@ -339,6 +343,12 @@ export default function NewInvoice() {
           shipToMobile: shipToFields?.shipToMobile || "",
           shipToGst: shipToFields?.shipToGst || "",
         }),
+        bankDetails: {
+          bankName: formData?.bankName || "",
+          accountNumber: formData?.accountNumber || "",
+          ifscCode: formData?.ifscCode || "",
+          branchName: formData?.branch || "",
+        }
     };
     return data;
   };
@@ -455,7 +465,7 @@ export default function NewInvoice() {
                   </button>
                 </div>
 
-                <button
+                {/* <button
                   type="button"
                   className="btn btn-outline-primary"
                   style={{
@@ -468,7 +478,7 @@ export default function NewInvoice() {
                   disabled={selectedClient === null || creatingbill}
                 >
                   {creatingbill ? "Creating.." : "Create Bill"}
-                </button>
+                </button> */}
               </div>
             </div>
             <div className="col-md-9 position-relative z-1">

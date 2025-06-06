@@ -35,8 +35,9 @@ export const addUpdateInvoice = (data, navigate) => {
       headers: { "Content-Type": "application/json" },
     })
     .then((res) => {
-      console.log("✅ Invoice saved:", res.data);
-      navigate("/invoice/generated-invoice", { state: data });
+      // console.log("✅ Invoice saved:", res.data);
+      // navigate("/invoice/generated-invoice", { state: data });
+      showSuccess("Invoice has been Generated successfully");
     })
     .catch((err) => {
       console.error("❌ Error saving invoice:", err);

@@ -5,6 +5,7 @@ import Invoice4Header from "./Invoice4Header"
 import Invoice4Table from "./Invoice4Table"
 import Invoice4Tax from "./Invoice4Tax"
 import Invoice4ContinueFooter from "./Invoice4ContinueFooter"
+import { ToWords } from 'to-words';
 
 // Create styles
 const styles = StyleSheet.create({
@@ -125,6 +126,7 @@ const styles = StyleSheet.create({
     width: "15%",
     padding: 3,
     textAlign: "center",
+    textTransform: "uppercase",
   },
   tableCellRate: {
     width: "12%",
@@ -135,6 +137,7 @@ const styles = StyleSheet.create({
     width: "10%",
     padding: 3,
     textAlign: "center",
+    textTransform: "uppercase",
   },
   tableCellAmount: {
     width: "18%",
@@ -193,302 +196,313 @@ const styles = StyleSheet.create({
   },
 })
 
-// Sample data matching the PDF exactly
-const invoiceData = {
-  seller: {
-    name: "AVID RISE DIGITAL SOLUTATIONS",
-    address: "Azizganj Anand Vihaar Near S.S College\nShahjahanpur",
-    gstin: "09ACEFA9697B1Z3",
-    state: "Uttar Pradesh, Code: 09",
-    contact: "9307489221",
-  },
-  consignee: {
-    name: "ULTRATECH CEMENT LIMITED",
-    address: "SHAHJAHANPUR UNIT",
-    gstin: "09AAACL6442L1Z8",
-    state: "Uttar Pradesh, Code: 09",
-  },
-  buyer: {
-    name: "ULTRATECH CEMENT LIMITED",
-    address: "SHAHJAHANPUR UNIT",
-    gstin: "09AAACL6442L1Z8",
-    state: "Uttar Pradesh, Code: 09",
-    placeOfSupply: "Uttar Pradesh",
-  },
-  invoice: {
-    number: "04",
-    date: "09-Apr-25",
-    deliveryNote: "",
-    modeTerms: "",
-    buyerOrderNo: "",
-    dated: "",
-    dispatchDocNo: "",
-    deliveryNoteDate: "",
-    dispatchedThrough: "",
-    destination: "SHAHJAHANPUR UNIT",
-    termsOfDelivery: "",
-  },
-  items: [
-    {
-      slNo: 1,
-      description: "Winding",
-      hsn: "844540",
-      // gstRate: "18%",
-      quantity: "1.00 NOS",
-      rate: 3500.0,
-      amount: 3500.0,
+// Function to convert numbers to words
+const toWords = new ToWords({
+  localeCode: 'en-IN',
+  converterOptions: {
+    currency: true,
+    ignoreDecimal: false,
+    ignoreZeroCurrency: false,
+    doNotAddOnly: false,
+    currencyOptions: {
+      name: 'Rupee',
+      plural: 'Rupees',
+      symbol: '₹',
+      fractionalUnit: {
+        name: 'Paisa',
+        plural: 'Paise',
+        symbol: '',
+      },
     },
-    {
-      slNo: 2,
-      description: "Bush",
-      hsn: "8545",
-      // gstRate: "18%",
-      quantity: "1.00 NOS",
-      rate: 2100.0,
-      amount: 2100.0,
-    },
-    {
-      slNo: 3,
-      description: "Seal",
-      hsn: "998711",
-      // gstRate: "18%",
-      quantity: "1.00 NOS",
-      rate: 400.0,
-      amount: 400.0,
-    },
-    { slNo: 4, description: "Apple Iphone", hsn: "99811", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 5, description: "Apple MackBook", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 6, description: "Apple Ipad", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 7, description: "Apple Tv", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 8, description: "Apple Airpods", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 9, description: "Apple Mouse", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 10, description: "Apple Keyboard", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 11, description: "Apple TrackPad", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 12, description: "Apple Keyboard", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 13, description: "Apple Keyboard", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 14, description: "Apple Keyboard", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    { slNo: 15, description: "Apple Keyboard", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    // { slNo: 16, description: "Apple Keyboard", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-    // { slNo: 17, description: "Apple Keyboard", hsn: "998711", rate: 400.0, quantity: "1.00 NOS", amount: 400.0 },
-  ],
-  calculations: {
-    subTotal: 6000.0,
-    discount: 400.0,
-    taxableValue: 5600.0,
-    cgst: 504.0,
-    sgst: 504.0,
-    total: 6608.0,
   },
-  amountInWords: "INR Six Thousand Six Hundred Eight Rupees only",
-  taxAmountInWords: "INR One Thousand Eight rupees Only",
-  bankDetails: {
-    bankName: "Bank of Baroda",
-    accountNo: "77490200001522",
-    branch: "LAL IMLI CHAURAHA SHAHJAHANPUR & BARB0VJSHPU",
-  },
+});
+
+const chunkItems = (items, itemsPerPage) => {
+  const chunks = []
+  for (let i = 0; i < items.length; i += itemsPerPage) {
+    chunks.push(items.slice(i, i + itemsPerPage))
+  }
+  return chunks
 }
 
-// Table header component
-const TableHeader = () => (
-  <View style={[styles.row, styles.tableHeader]} fixed>
-    <Text style={styles.tableCellSlNo}>Sl No.</Text>
-    <Text style={styles.tableCellDescription}>Description of Goods</Text>
-    <Text style={styles.tableCellHSN}>HSN/SAC</Text>
-    <Text style={styles.tableCellGSTQuantity}>GST Quantity</Text>
-    <Text style={styles.tableCellRate}>Rate</Text>
-    <Text style={styles.tableCellRatePer}>Rate per</Text>
-    <Text style={styles.tableCellAmount}>Amount</Text>
-  </View>
-)
+const TaxInvoicePDF = ({ formData }) => {
+  console.log("Form Data in PDF:", formData);
 
-const TaxInvoicePDF = () => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <Invoice4Header invoiceData={invoiceData} />
+  const itemsPerPage = 15
+  const itemChunks = chunkItems(formData?.items, itemsPerPage)
+  const totalPages = itemChunks.length
 
-      {/* Items Table */}
-      <View style={[styles.table, { marginTop: "-20px", borderTopWidth: 0, position: 'relative' }]} wrap>
-        <Invoice4Table />
+  console.log("Total Pages:", totalPages, itemChunks);
 
-        <View style={styles.tableItems} >
-          {/* Table Rows */}
-          {invoiceData.items.map((item, index) => (
-            <View key={index} style={styles.row} wrap={false}>
-              <Text style={styles.tableCellSlNo}>{item.slNo}</Text>
-              <Text style={styles.tableCellDescription}>{item.description}</Text>
-              <Text style={styles.tableCellHSN}>{item.hsn}</Text>
-              <Text style={styles.tableCellGSTQuantity}>
-                {item.gstRate} {item.quantity}
-              </Text>
-              <Text style={styles.tableCellRate}>{item.rate.toFixed(2)}</Text>
-              <Text style={styles.tableCellRatePer}>NOS</Text>
-              <Text style={styles.tableCellAmount}>{item.amount.toFixed(2)}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Total, Discount, CGST, SGST Rows Only On Last page */}
-        <View style={styles.totalRow} >
-          <View style={styles.row} wrap={false}>
-            <Text style={styles.tableCellSlNo}></Text>
-            <Text style={[styles.tableCellDescription, { textAlign: 'right', fontSize: 8, fontWeight: 'bold' }]}></Text>
-            <Text style={styles.tableCellHSN}></Text>
-            <Text style={styles.tableCellGSTQuantity}></Text>
-            <Text style={styles.tableCellRate}></Text>
-            <Text style={styles.tableCellRatePer}></Text>
-            <Text style={[styles.tableCellAmount, { borderTopWidth: 1, fontSize: 8 }]}>6000</Text>
-          </View>
-        </View>
-        <View style={styles.discountRow} >
-          <View style={styles.row} wrap={false}>
-            <Text style={styles.tableCellSlNo}></Text>
-            <Text style={[styles.tableCellDescription, { textAlign: 'right', fontSize: 8, fontWeight: 'bold' }]}>Discount Given</Text>
-            <Text style={styles.tableCellHSN}></Text>
-            <Text style={styles.tableCellGSTQuantity}></Text>
-            <Text style={styles.tableCellRate}></Text>
-            <Text style={styles.tableCellRatePer}></Text>
-            <Text style={[styles.tableCellAmount, { fontSize: 8 }]}>150</Text>
-          </View>
-        </View>
-        <View style={styles.cgstRow} >
-          <View style={styles.row} wrap={false}>
-            <Text style={styles.tableCellSlNo}></Text>
-            <Text style={[styles.tableCellDescription, { textAlign: 'right', fontSize: 8, fontWeight: 'bold' }]}>CGST</Text>
-            <Text style={styles.tableCellHSN}></Text>
-            <Text style={styles.tableCellGSTQuantity}></Text>
-            <Text style={styles.tableCellRate}></Text>
-            <Text style={styles.tableCellRatePer}></Text>
-            <Text style={[styles.tableCellAmount, { fontSize: 8, fontWeight: 'bold' }]}>200</Text>
-          </View>
-        </View>
-        <View style={styles.sgstRow} >
-          <View style={styles.row} wrap={false}>
-            <Text style={styles.tableCellSlNo}></Text>
-            <Text style={[styles.tableCellDescription, { textAlign: 'right', fontSize: 8, fontWeight: 'bold' }]}>SGST</Text>
-            <Text style={styles.tableCellHSN}></Text>
-            <Text style={styles.tableCellGSTQuantity}></Text>
-            <Text style={styles.tableCellRate}></Text>
-            <Text style={styles.tableCellRatePer}></Text>
-            <Text style={[styles.tableCellAmount, { fontSize: 8, fontWeight: 'bold' }]}>200</Text>
-          </View>
-        </View>
-
-
-        {/* Final Total Row Only on Last Page */}
-        <View style={[styles.row, { borderBottomWidth: 0, borderTopWidth: 1, borderRightWidth: 1 }]} wrap={false}>
-          <Text style={[styles.tableCellSlNo, { flex: 5, borderRightWidth: 0 }]}></Text>
-          <Text
-            style={[styles.tableCellRate, { flex: 0.5, borderRightWidth: 0, textAlign: "left", fontWeight: "bold" }]}
-          >
-            Total
-          </Text>
-          <Text style={[styles.tableCellAmount, { fontWeight: "bold" }]}>
-            {invoiceData.calculations.total.toFixed(2)}
-          </Text>
-        </View>
-      </View>
-
-      {/* Continue Footer if items more than 15 */}
-      <Invoice4ContinueFooter />
-
-      {/* Amount in Words Only on Last Page */}
-      <View style={[styles.section, { borderTopWidth: 0, borderBottomWidth: 0 }]}>
-        <Text style={styles.bold}>Amount Chargeable (in words): {invoiceData.amountInWords}</Text>
-      </View>
-
-      {/* Tax Section Only on Last Page */}
-      <Invoice4Tax />
-
-      {/* Tax Amount in Words Only on Last Page */}
-      <View style={[styles.section, { borderBottomWidth: 1 }]}>
-        <Text style={styles.bold}>Tax Amount (in words): {invoiceData.taxAmountInWords}</Text>
-      </View>
-
-      {/* Declaration and Bank Details on each page */}
-      <View style={styles.declarationSection}>
-        <View style={styles.leftColumn}>
-          <Text style={styles.bold}>Declaration</Text>
-          <Text style={styles.smallText}>
-            We declare that this invoice shows the actual price of the goods described and that all particulars are true
-            and correct.
-          </Text>
-        </View>
-        <View style={styles.rightColumn}>
-          <Text style={styles.bold}>Company's Bank Details</Text>
-          <Text>Bank Name: {invoiceData.bankDetails.bankName}</Text>
-          <Text>A/c No.: {invoiceData.bankDetails.accountNo}</Text>
-          <Text>Branch & IFS Code: {invoiceData.bankDetails.branch}</Text>
-        </View>
-      </View>
-
-      {/* Signature Section on each page */}
-      <View style={styles.signatureSection}>
-        <Text style={styles.bold}>For {invoiceData.seller.name}</Text>
-        <Text style={{ marginTop: 30 }}>Authorised Signatory</Text>
-      </View>
-
-      {/* Footer */}
-      <Text style={styles.footer}>This is a Computer Generated Invoice</Text>
-      <Text style={[styles.footer, { marginTop: 5 }]}>E. & O.E</Text>
-
-      {/* Page Number */}
-      <Text
-        style={styles.pageNumber}
-        render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-        fixed
-      />
-    </Page>
-  </Document >
-)
-
-// Component to render the PDF download link
-const InvoicePdf4 = () => {
-  const [showViewer, setShowViewer] = useState(false)
 
   return (
-    <div className="container mx-auto p-5">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-4">Tax Invoice Generator</h2>
-        <div className="space-x-4">
-          <PDFDownloadLink
-            document={<TaxInvoicePDF />}
-            fileName="tax-invoice.pdf"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            {({ blob, url, loading, error }) => (loading ? "Loading document..." : "Download Tax Invoice PDF")}
-          </PDFDownloadLink>
+    <Document>
+      {itemChunks.map((pageItems, pageIndex) => {
+        const isFirstPage = pageIndex === 0
+        const isLastPage = pageIndex === totalPages - 1
+        const showFullFooter = isLastPage
 
-          <button
-            onClick={() => setShowViewer((prev) => !prev)}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          >
-            {showViewer ? "Hide PDF" : "View PDF"}
-          </button>
+        return (
+          <Page key={pageIndex} size="A4" style={styles.page}>
+            {/* Header - show on first page only */}
+            {isFirstPage && <Invoice4Header formData={formData} />}
+
+            {/* Continuation header for subsequent pages */}
+            {!isFirstPage && (
+              <View style={{ marginBottom: 20 }}>
+                <Text style={styles.header}>TAX INVOICE (Continued)</Text>
+                <Text style={[styles.textCenter, { fontSize: 10, marginBottom: 10 }]}>
+                  Invoice No: {formData?.invoiceNumber} | Date: {formData?.date}
+                </Text>
+              </View>
+            )}
+
+            {/* Items Table */}
+            <View
+              style={[
+                styles.table,
+                { marginTop: isFirstPage ? "-20px" : "0px", borderTopWidth: 0, position: "relative" },
+              ]}
+              wrap
+            >
+              <Invoice4Table />
+
+              <View style={styles.tableItems}>
+                {/* Table Rows for current page */}
+                {pageItems?.map((item, index) => (
+                  <View key={index} style={styles.row} wrap={false}>
+                    <Text style={styles.tableCellSlNo}>{index + 1}</Text>
+                    <Text style={styles.tableCellDescription}>{item?.description}</Text>
+                    <Text style={styles.tableCellHSN}>{item?.hsnCode}</Text>
+                    <Text style={styles.tableCellGSTQuantity}>
+                      {item?.quantity} {item?.selectedOption?.item?.unit_measure}
+                    </Text>
+                    <Text style={styles.tableCellRate}>{item?.rate?.toFixed(2)}</Text>
+                    <Text style={styles.tableCellRatePer}>{item?.selectedOption?.item?.unit_measure}</Text>
+                    <Text style={styles.tableCellAmount}>{item?.total?.toFixed(2)}</Text>
+                  </View>
+                ))}
+              </View>
+
+              {/* Show calculation rows only on last page */}
+              {showFullFooter && (
+                <>
+                  <View style={styles.totalRow}>
+                    <View style={styles.row} wrap={false}>
+                      <Text style={styles.tableCellSlNo}></Text>
+                      <Text
+                        style={[styles.tableCellDescription, { textAlign: "right", fontSize: 8, fontWeight: "bold" }]}
+                      ></Text>
+                      <Text style={styles.tableCellHSN}></Text>
+                      <Text style={styles.tableCellGSTQuantity}></Text>
+                      <Text style={styles.tableCellRate}></Text>
+                      <Text style={styles.tableCellRatePer}></Text>
+                      <Text style={[styles.tableCellAmount, { borderTopWidth: 1, fontSize: 8 }]}>{formData?.subTotal?.toFixed(2)}</Text>
+                    </View>
+                  </View>
+                  {formData?.discount?.isDiscountApplicable && <View style={styles.discountRow}>
+                    <View style={styles.row} wrap={false}>
+                      <Text style={styles.tableCellSlNo}></Text>
+                      <Text
+                        style={[styles.tableCellDescription, { textAlign: "right", fontSize: 8, fontWeight: "bold" }]}
+                      >
+                        Discount Given {formData?.discount?.discountType === "percent" ? `(${formData?.discount?.discountPercentage}%)` : "(Flat)"}
+                      </Text>
+                      <Text style={styles.tableCellHSN}></Text>
+                      <Text style={styles.tableCellGSTQuantity}></Text>
+                      <Text style={styles.tableCellRate}></Text>
+                      <Text style={styles.tableCellRatePer}></Text>
+                      <Text style={[styles.tableCellAmount, { fontSize: 8 }]}>{Number(formData?.totalDiscount)?.toFixed(2)}</Text>
+                    </View>
+                  </View>}
+                  {formData?.tax?.isTaxApplicable && formData?.tax?.taxType === "IGST" && <View style={styles.cgstRow}>
+                    <View style={styles.row} wrap={false}>
+                      <Text style={styles.tableCellSlNo}></Text>
+                      <Text
+                        style={[styles.tableCellDescription, { textAlign: "right", fontSize: 8, fontWeight: "bold" }]}
+                      >
+                        IGST
+                      </Text>
+                      <Text style={styles.tableCellHSN}></Text>
+                      <Text style={styles.tableCellGSTQuantity}></Text>
+                      <Text style={styles.tableCellRate}></Text>
+                      <Text style={styles.tableCellRatePer}></Text>
+                      <Text style={[styles.tableCellAmount, { fontSize: 8, fontWeight: "bold" }]}>{formData?.totalTax?.toFixed(2)}</Text>
+                    </View>
+                  </View>}
+                  {formData?.tax?.isTaxApplicable && formData?.tax?.taxType !== "IGST" && <View style={styles.cgstRow}>
+                    <View style={styles.row} wrap={false}>
+                      <Text style={styles.tableCellSlNo}></Text>
+                      <Text
+                        style={[styles.tableCellDescription, { textAlign: "right", fontSize: 8, fontWeight: "bold" }]}
+                      >
+                        CGST
+                      </Text>
+                      <Text style={styles.tableCellHSN}></Text>
+                      <Text style={styles.tableCellGSTQuantity}></Text>
+                      <Text style={styles.tableCellRate}></Text>
+                      <Text style={styles.tableCellRatePer}></Text>
+                      <Text style={[styles.tableCellAmount, { fontSize: 8, fontWeight: "bold" }]}>{(formData?.totalTax / 2)?.toFixed(2)}</Text>
+                    </View>
+                  </View>}
+                  {formData?.tax?.isTaxApplicable && formData?.tax?.taxType !== "IGST" && <View style={styles.sgstRow}>
+                    <View style={styles.row} wrap={false}>
+                      <Text style={styles.tableCellSlNo}></Text>
+                      <Text
+                        style={[styles.tableCellDescription, { textAlign: "right", fontSize: 8, fontWeight: "bold" }]}
+                      >
+                        SGST
+                      </Text>
+                      <Text style={styles.tableCellHSN}></Text>
+                      <Text style={styles.tableCellGSTQuantity}></Text>
+                      <Text style={styles.tableCellRate}></Text>
+                      <Text style={styles.tableCellRatePer}></Text>
+                      <Text style={[styles.tableCellAmount, { fontSize: 8, fontWeight: "bold" }]}>{(formData?.totalTax / 2)?.toFixed(2)}</Text>
+                    </View>
+                  </View>}
+
+                  {/* Final Total Row Only on Last Page */}
+                  <View
+                    style={[styles.row, { borderBottomWidth: 0, borderTopWidth: 1, borderRightWidth: 1 }]}
+                    wrap={false}
+                  >
+                    <Text style={[styles.tableCellSlNo, { flex: 5, borderRightWidth: 0 }]}></Text>
+                    <Text
+                      style={[
+                        styles.tableCellRate,
+                        { flex: 0.5, borderRightWidth: 0, textAlign: "left", fontWeight: "bold" },
+                      ]}
+                    >
+                      Total
+                    </Text>
+                    <Text style={[styles.tableCellAmount, { fontWeight: "bold" }]}>
+                      {formData?.total?.toFixed(2)}
+                    </Text>
+                  </View>
+                </>
+              )}
+            </View>
+
+            {/* Continue Footer - show on all pages except last */}
+            {!showFullFooter && <Invoice4ContinueFooter />}
+
+            {/* Full Footer Sections - show only on last page */}
+            {showFullFooter && (
+              <>
+                {/* Amount in Words Only on Last Page */}
+                <View style={[styles.section, { borderTopWidth: 0, borderBottomWidth: 0 }]}>
+                  <Text style={styles.bold}>Amount Chargeable (in words): {toWords.convert(formData?.total)}</Text>
+                </View>
+
+                {/* Tax Section Only on Last Page */}
+                {formData?.tax?.isTaxApplicable && <Invoice4Tax formData={formData} />}
+
+                {/* Tax Amount in Words Only on Last Page */}
+                {formData?.tax?.isTaxApplicable && <View style={[styles.section, { borderBottomWidth: 1 }]}>
+                  <Text style={styles.bold}>Tax Amount (in words): {toWords.convert(formData?.totalTax.toFixed(0))}</Text>
+                </View>}
+              </>
+            )}
+
+            {/* Declaration and Bank Details on each page */}
+            <View style={styles.declarationSection}>
+              <View style={styles.leftColumn}>
+                <Text style={styles.bold}>Declaration</Text>
+                <Text style={styles.smallText}>
+                  {formData?.notes}
+                </Text>
+              </View>
+              <View style={styles.rightColumn}>
+                <Text style={styles.bold}>Company's Bank Details</Text>
+                <Text>Bank Name: {formData?.bankDetails?.bankName}</Text>
+                <Text>A/c No.: {formData?.bankDetails?.accountNumber}</Text>
+                <Text>Branch & IFS Code: {formData?.bankDetails?.branchName} & {formData?.bankDetails?.ifscCode} </Text>
+              </View>
+            </View>
+
+            {/* Signature Section on each page */}
+            <View style={styles.signatureSection}>
+              <Text style={styles.bold}>For {formData?.businessName}</Text>
+              <Text style={{ marginTop: 30 }}>Authorised Signatory</Text>
+            </View>
+
+            {/* Footer */}
+            <Text style={styles.footer}>This is a Computer Generated Invoice</Text>
+            <Text style={[styles.footer, { marginTop: 5 }]}>E. & O.E</Text>
+
+            {/* Page Number */}
+            <Text
+              style={styles.pageNumber}
+              render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+              fixed
+            />
+          </Page>
+        )
+      })}
+    </Document >
+  )
+}
+
+
+
+// Component to render the PDF download link
+const InvoicePdf4 = ({ formData, generatePdf }) => {
+  const [showViewer, setShowViewer] = useState(true)
+  console.log("Form Data:", formData);
+
+
+  return (
+    <div className="flex flex-row p-3 gap-3">
+      <div style={{ width: "40%" }} >
+        <div className="text-center mb-8">
+          <h2 className="fs-1 font-bold mb-2">{formData?.invoiceName}</h2>
+          <div className="space-x-4">
+            <div onClick={() => {
+              generatePdf();
+            }}>
+              <PDFDownloadLink
+                document={<TaxInvoicePDF formData={formData} />}
+                fileName="tax-invoice.pdf"
+                className="btn btn-primary"
+              >
+                {({ blob, url, loading, error }) => (loading ? "Loading document..." : "Generate Invoice")}
+              </PDFDownloadLink>
+            </div>
+
+            {/* <button
+              onClick={() => setShowViewer((prev) => !prev)}
+              className="btn btn-success btn-lg"
+              style={{ marginLeft: "10px" }}
+            >
+              {showViewer ? "Hide PDF" : "View PDF"}
+            </button> */}
+          </div>
+        </div>
+
+        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 className="fs-4 font-semibold mb-2">Buyer Information:</h4>
+            <p className="font-bold fs-6">{formData?.billName}</p>
+            <p className="fs-6">{formData?.billAddress}</p>
+            <p className="fs-6">GSTIN: {formData?.gst_no}</p>
+          </div>
+          <div>
+            <h4 className="fs-4 font-semibold mb-2">Invoice Details:</h4>
+            <p className="font-bold fs-6">Invoice No: {formData?.invoiceNumber}</p>
+            <p className="fs-6">Date: {formData?.date}</p>
+            <p className="fs-6">Total Amount: ₹{formData?.total?.toFixed(2)}</p>
+          </div>
         </div>
       </div>
 
+
       {showViewer && (
-        <div className="mt-4 h-screen border border-gray-300">
+        <div className="w-full h- border border-gray-300" style={{ height: 'calc(100vh - 250px)' }}>
           <PDFViewer width="100%" height="100%">
-            <TaxInvoicePDF />
+            <TaxInvoicePDF formData={formData} />
           </PDFViewer>
         </div>
       )}
-
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h4 className="text-lg font-semibold mb-2">Seller Information:</h4>
-          <p className="font-bold">{invoiceData.seller.name}</p>
-          <p>{invoiceData.seller.address}</p>
-          <p>GSTIN: {invoiceData.seller.gstin}</p>
-        </div>
-        <div>
-          <h4 className="text-lg font-semibold mb-2">Invoice Details:</h4>
-          <p>Invoice No: {invoiceData.invoice.number}</p>
-          <p>Date: {invoiceData.invoice.date}</p>
-          <p>Total Amount: ₹{invoiceData.calculations.total.toFixed(2)}</p>
-        </div>
-      </div>
     </div>
   )
 }

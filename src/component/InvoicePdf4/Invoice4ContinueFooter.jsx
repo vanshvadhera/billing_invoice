@@ -1,5 +1,5 @@
 import React from 'react'
-import { Document, Page, Text, View, StyleSheet, PDFViewer, PDFDownloadLink } from "@react-pdf/renderer"
+import { Text, View, StyleSheet } from "@react-pdf/renderer"
 
 const styles = StyleSheet.create({
     row: {
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 0,
         borderColor: "#000",
         height: 100,
-        justifyContent: 'center',   
+        justifyContent: 'center',
     },
 })
 
@@ -24,7 +24,7 @@ const Invoice4ContinueFooter = () => {
         return (
             <View style={styles.row}>
                 <View style={styles.cell} >
-                    <Text style={{ textAlign: 'center', fontSize: 12, fontWeight: 'bold' }} >Continued On Nex Page</Text>
+                    <Text style={{ textAlign: 'center', fontSize: 12, fontWeight: 'bold' }} >Continued On Next Page</Text>
                 </View>
             </View>
         )
