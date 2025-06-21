@@ -13,7 +13,7 @@ export default function Clients() {
   const navigate = useNavigate();
 
   const fetchUserClients = () => {
-    console.log("Fetching clients...");
+    // console.log("Fetching clients...");
     getClients(setClients, setLoading);
   };
 
@@ -67,6 +67,7 @@ export default function Clients() {
             title={`Add your clients and speed up your invoice creation.`}
             btnTitle="New Client"
             link="/client/new"
+            showButton={false}
           />
         ) : (
           <div className="card-body border-top p-0">

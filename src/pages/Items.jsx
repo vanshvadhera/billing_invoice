@@ -26,7 +26,7 @@ export default function Items() {
     fetchUserItems();
   }, []);
 
-  console.log("Items:", items);
+  // console.log("Items:", items);
 
 
   return (
@@ -69,6 +69,7 @@ export default function Items() {
             title={`Add your commonly invoiced items and <br/> speed up your invoice creation.`}
             btnTitle="New Item"
             link="/item/new"
+            showButton={false}
           />
         ) : (
           <div className="card-body border-top p-0">

@@ -47,7 +47,7 @@ const SignUp = () => {
 
   return (
     <>
-      <div className="container top-right">
+      <div className="container top-right" style={{marginTop: '20px'}} >
         {alert && (
           <div
             className={`alert alert-${alert.type} bg-${alert.type} text-white d-flex justify-content-between align-items-center gap-5`}
@@ -63,11 +63,11 @@ const SignUp = () => {
       </div>
 
       <div
-        className="container-fluid d-flex justify-content-center align-items-center flex-column pattern-bg"
-        style={{ height: "100vh" }}
+        className="d-flex justify-content-center align-items-center flex-column"
+        style={{ marginTop: "100px" }}
       >
         <div className="sign-up-content mb-3">
-          <h3 className="text-white">Create an Account</h3>
+          <h3 className="text-black">Create an Account</h3>
         </div>
         <div
           className="card p-5 shadow-lg"
@@ -152,9 +152,8 @@ const SignUp = () => {
               />
 
               <i
-                className={`fa ${
-                  showConfirmPassword ? "fa-eye" : "fa-eye-slash"
-                }`}
+                className={`fa ${showConfirmPassword ? "fa-eye" : "fa-eye-slash"
+                  }`}
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 style={{
                   position: "absolute",
@@ -178,11 +177,11 @@ const SignUp = () => {
               {loading ? "Signing Up..." : "Sign Up"}
             </button>
 
-            <div className="mt-3 text-center">
+            {/* <div className="mt-3 text-center">
               <p>
                 Already have an account? <Link to="/login">Sign In</Link>
               </p>
-            </div>
+            </div> */}
           </form>
         </div>
       </div>

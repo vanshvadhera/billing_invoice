@@ -183,11 +183,17 @@ export default function Header() {
                   Clients
                 </Link>
               </li>}
+              {user?.admin && <li className="nav-item">
+                <Link className="nav-link " to="/create/client">
+                  Create Client
+                </Link>
+              </li>}
               <li className="nav-item ">
                 <Link className="nav-link " to="/profile">
                   Profile
                 </Link>
               </li>
+
               {!user?.isCodeSetup && (
                 <li className="nav-item">
                   <p className="m-0 blink bg-red-500 px-2 rounded-2xl ">Profile Not Active</p>

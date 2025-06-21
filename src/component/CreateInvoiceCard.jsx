@@ -6,6 +6,7 @@ const CreateInvoiceCard = ({
   btnTitle,
   link,
   icon,
+  showButton = true,
 }) => {
   return (
     <div className={`card-body border-top ${length === 0 ? "" : "p-0"}`}>
@@ -17,12 +18,12 @@ const CreateInvoiceCard = ({
             __html: title,
           }}
         />
-        <Link
+        {showButton && <Link
           to={link}
           className="btn new-invoice-btn ms-2 justify-content-center d-inline"
         >
           <i className="fa fa-plus me-1"></i> {btnTitle}
-        </Link>
+        </Link>}
       </div>
     </div>
   );

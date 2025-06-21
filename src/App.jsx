@@ -35,9 +35,30 @@ const isAuthenticated = () => {
 // Main App Component
 const App = () => {
   const location = useLocation();
-  const isAuthPage = ["/login", "/signup", "/forgot-password"].includes(
+  const isAuthPage = ["/login", "/forgot-password"].includes(
     location.pathname
   );
+
+  const NotFound = () => {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          padding: "2rem",
+        }}
+      >
+        <h1 style={{ fontSize: "4rem", marginBottom: "1rem" }}>404</h1>
+        <h2>Page Not Found</h2>
+        <p>The page you're looking for doesn't exist.</p>
+      </div>
+    );
+  };
+
 
   return (
     <div>
@@ -48,10 +69,6 @@ const App = () => {
           element={isAuthenticated() ? <Navigate to="/" replace /> : <Login />}
         />
         <Route
-          path="/signup"
-          element={isAuthenticated() ? <Navigate to="/" replace /> : <SignUp />}
-        />
-        <Route
           path="/forgot-password"
           element={
             isAuthenticated() ? <Navigate to="/" replace /> : <ForgotPassword />
@@ -60,10 +77,12 @@ const App = () => {
 
         {/* Protected Routes */}
         <Route path="/" element={<PrivateRoute element={<Invoice />} />} />
+        <Route path="/create/client" element={<PrivateRoute element={<SignUp />} />} />
         <Route
           path="/invoice/new-invoice"
           element={<PrivateRoute element={<NewInvoice />} />}
         />
+      
         <Route
           path="/invoice/edit-invoice"
           element={<PrivateRoute element={<NewInvoice />} />}
@@ -114,6 +133,9 @@ const App = () => {
           path="/report"
           element={<PrivateRoute element={<Report />} />}
         />
+        <Route path="*" element={<NotFound />} />
+
+        {/* Client Create Item */}
       </Routes>
     </div>
   );

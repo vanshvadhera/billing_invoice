@@ -1,5 +1,5 @@
 "use client"
-import { Document, Page, Text, View, StyleSheet, PDFViewer, PDFDownloadLink } from "@react-pdf/renderer"
+import { Document, Page, Text, View, Image, StyleSheet, PDFViewer, PDFDownloadLink } from "@react-pdf/renderer"
 import { useState } from "react"
 import Invoice4Header from "./Invoice4Header"
 import Invoice4Table from "./Invoice4Table"
@@ -226,13 +226,13 @@ const chunkItems = (items, itemsPerPage) => {
 }
 
 const TaxInvoicePDF = ({ formData }) => {
-  console.log("Form Data in PDF:", formData);
+  // console.log("Form Data in PDF:", formData);
 
   const itemsPerPage = 15
   const itemChunks = chunkItems(formData?.items, itemsPerPage)
   const totalPages = itemChunks.length
 
-  console.log("Total Pages:", totalPages, itemChunks);
+  // console.log("Total Pages:", totalPages, itemChunks);
 
 
   return (
@@ -423,7 +423,8 @@ const TaxInvoicePDF = ({ formData }) => {
             {/* Signature Section on each page */}
             <View style={styles.signatureSection}>
               <Text style={styles.bold}>For {formData?.businessName}</Text>
-              <Text style={{ marginTop: 30 }}>Authorised Signatory</Text>
+              <Image src={`${formData?.sigUrl}?${new Date()}`} style={{ width: 100, height: 50 }} />
+              <Text style={{ marginTop: 0 }}>Authorised Signatory</Text>
             </View>
 
             {/* Footer */}
@@ -448,7 +449,7 @@ const TaxInvoicePDF = ({ formData }) => {
 // Component to render the PDF download link
 const InvoicePdf4 = ({ formData, generatePdf }) => {
   const [showViewer, setShowViewer] = useState(true)
-  console.log("Form Data:", formData);
+  // console.log("Form Data:", formData);
 
 
   return (

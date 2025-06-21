@@ -356,7 +356,7 @@ export default function NewInvoice() {
   const handlePreviewClick = () => {
     const data = getInvoiceFormData2(formRef, shipToFields, copyBilling);
     if (!data) return;
-    console.log("✅ Final Data to be sentr:", data);
+    // console.log("✅ Final Data to be sentr:", data);
     navigate("/invoice/preview-invoice", { state: data });
   };
 

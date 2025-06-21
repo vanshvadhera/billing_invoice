@@ -86,11 +86,11 @@ const LoginPage = () => {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
-          <div className="mt-3 text-center">
+          {/* <div className="mt-3 text-center">
             <p>
               Don't have an account? <Link to="/signup">Sign Up</Link>
             </p>
-          </div>
+          </div> */}
         </form>
       </div>
 
