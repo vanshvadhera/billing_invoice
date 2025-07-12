@@ -230,7 +230,7 @@ const ItemRow = ({
             <tr>
               <th></th>
               <th style={{ width: "40%" }}>DESCRIPTION</th>
-              <th className="text-end">HSN</th>
+              <th className="text-end">HSN/SAC</th>
               <th className="text-end">Rate</th>
               <th className="text-end">QTY</th>
               <th className="text-end">AMOUNT</th>

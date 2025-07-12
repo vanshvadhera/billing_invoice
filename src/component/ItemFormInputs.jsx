@@ -19,7 +19,7 @@ export default function ItemFormInputs({
         <input name="item_name" value={formData.item_name} onChange={handleChange} className="form-control" required />
       </div>
       <div className="mb-3">
-        <label>Item Code</label>
+        <label>HSN/SAC Code</label>
         <input name="item_code" value={formData.item_code} onChange={handleChange} className="form-control" />
       </div>
       <div className="mb-3">
@@ -68,7 +68,7 @@ export default function ItemFormInputs({
               className="form-check-input"
             />
             <label className="form-check-label" htmlFor="pcs">
-              pcs
+              NOS
             </label>
           </div>
           <div className="form-check">

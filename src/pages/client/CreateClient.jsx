@@ -14,6 +14,8 @@ export default function CreateClient({ onClose, fetchUserClients, existingClient
         email: "",
         mobile_number: "",
         address: "",
+        state: "",
+        state_code: "",
     });
 
     useEffect(() => {
@@ -24,6 +26,8 @@ export default function CreateClient({ onClose, fetchUserClients, existingClient
                 email: existingClient.email || "",
                 mobile_number: existingClient.mobile_number || "",
                 address: existingClient.address || "",
+                state: existingClient.state || "",
+                state_code: existingClient.state_code || "",
             });
         }
     }, [existingClient]);
@@ -35,6 +39,8 @@ export default function CreateClient({ onClose, fetchUserClients, existingClient
             address: "",
             mobile_number: "",
             gst_no: "",
+            state: "",
+            state_code: "",
         });
     };
 
@@ -72,6 +78,8 @@ export default function CreateClient({ onClose, fetchUserClients, existingClient
                     address: "",
                     mobile_number: "",
                     gst_no: "",
+                    state: "",
+                    state_code: "",
                 });
             },
             () => {

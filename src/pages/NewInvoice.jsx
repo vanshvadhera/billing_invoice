@@ -169,6 +169,8 @@ export default function NewInvoice() {
         address: editData?.billAddress,
         mobile_number: editData?.billMobile,
         gst_no: editData?.gst_no,
+        state: editData?.billState,
+        state_code: editData?.billStateCode,
       });
 
       setIsShipTo(!!editData.shipToName);
@@ -307,6 +309,8 @@ export default function NewInvoice() {
       billEmail: selectedClient?.email || "",
       billMobile: selectedClient?.mobile_number || "",
       billName: selectedClient?.name || "",
+      billState: selectedClient?.state || "",
+      billStateCode: selectedClient?.state_code || "",
       gst_no: selectedClient?.gst_no || "",
       notes: formData?.notes || "",
       businessAddress: formData?.address || "",
@@ -314,6 +318,9 @@ export default function NewInvoice() {
       businessName: formData?.companyName || "",
       businessNumber: formData?.contactNumber || "",
       businessPhone: formData?.phoneNumber || "",
+      businessState: formData?.stateName || "",
+      businessStateCode: formData?.stateCode || "",
+      businessGst: formData?.gstNumber || "",
       logo: formData?.logo || "",
       sigUrl: formData?.signature_logo || "",
       date: currentDate,
@@ -335,6 +342,8 @@ export default function NewInvoice() {
           shipToAddress: selectedClient?.address || "",
           shipToMobile: selectedClient?.mobile_number || "",
           shipToGst: selectedClient?.gst_no || "",
+          shipToState: selectedClient?.state || "",
+          shipToStateCode: selectedClient?.state_code || "",
         }
         : {
           shipToName: shipToFields?.shipToName || "",
@@ -342,13 +351,15 @@ export default function NewInvoice() {
           shipToAddress: shipToFields?.shipToAddress || "",
           shipToMobile: shipToFields?.shipToMobile || "",
           shipToGst: shipToFields?.shipToGst || "",
+          shipToState: shipToFields?.shipToState || "N/A",
+          shipToStateCode: shipToFields?.shipToStateCode || "N/A",
         }),
-        bankDetails: {
-          bankName: formData?.bankName || "",
-          accountNumber: formData?.accountNumber || "",
-          ifscCode: formData?.ifscCode || "",
-          branchName: formData?.branch || "",
-        }
+      bankDetails: {
+        bankName: formData?.bankName || "",
+        accountNumber: formData?.accountNumber || "",
+        ifscCode: formData?.ifscCode || "",
+        branchName: formData?.branch || "",
+      }
     };
     return data;
   };
@@ -706,7 +717,7 @@ export default function NewInvoice() {
                     rows="6"
                     value={formData?.notes}
                     disabled={true}
-                    // onChange={(e) => setAdditionalNotes(e.target.value)}
+                  // onChange={(e) => setAdditionalNotes(e.target.value)}
                   />
                 </div>
 

@@ -79,7 +79,7 @@ export default function Items() {
                   <tr style={{ fontSize: "0.8rem" }} className="table-head">
                     <th>Item Name</th>
                     {/* <th>Item Category</th> */}
-                    <th>Item Code</th>
+                    <th>HSN/SAC Code</th>
                     <th>Item Price</th>
                     <th>Item Quantity</th>
                     <th>Unit Measurement</th>

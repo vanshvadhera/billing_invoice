@@ -14,6 +14,7 @@ export default function Profile() {
     address: "",
     gstNumber: "",
     stateName: "",
+    stateCode: "",
     contactNumber: "",
     bankName: "",
     accountNumber: "",
@@ -174,10 +175,21 @@ export default function Profile() {
                     />
                   </div>
                 ))}
+                <div className="col-md-4">
+                  <label className="form-label">State Code</label>
+                  <input
+                    type="text"
+                    name="stateCode"
+                    value={formData.stateCode}
+                    onChange={handleInputChange}
+                    className="form-control"
+                    placeholder="State Code (e.g., MH, DL, KA)"
+                  />
+                </div>
                 <div className="col-md-4" key={"Store Code"}>
                   <div className="flex flex-row gap-2" >
                     <label className="form-label text-capitalize">{"Store Code"}</label>
-                    <span className="text-red-600 font-semibold">(can only be set once)</span>
+                    {/* <span className="text-red-600 font-semibold">(can only be set once)</span> */}
                   </div>
                   <input
                     type="text"
@@ -186,7 +198,6 @@ export default function Profile() {
                     onChange={handleInputChange}
                     className="form-control"
                     placeholder={"Eg. INV"}
-                    disabled={formData.isCodeSetup}
                   />
                 </div>
               </div>

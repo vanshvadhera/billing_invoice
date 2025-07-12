@@ -62,10 +62,12 @@ export default function ClientFormInputs({
             value={formData.mobile_number}
             onChange={handleChange}
             required
+            maxLength={10}
+            minLength={10}
           />
         </div>
 
-        {/* Bill Amount Input */}
+        {/* Address Input */}
         <div className="mt-3">
           <label className="form-label mb-0">Address</label>
           <input
@@ -73,6 +75,32 @@ export default function ClientFormInputs({
             className="form-control"
             name="address"
             value={formData.address}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        {/* State Input */}
+        <div className="mt-3">
+          <label className="form-label mb-0">State</label>
+          <input
+            type="text"
+            className="form-control"
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        {/* State Code Input */}
+        <div className="mt-3">
+          <label className="form-label mb-0">State Code</label>
+          <input
+            type="text"
+            className="form-control"
+            name="state_code"
+            value={formData.state_code}
             onChange={handleChange}
             required
           />

@@ -80,6 +80,8 @@ export default function Clients() {
                     <th>Email</th>
                     <th>Mobile Number</th>
                     <th>Address</th>
+                    <th>State</th>
+                    <th>State Code</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -95,6 +97,8 @@ export default function Clients() {
                       <td>{client.email}</td>
                       <td>{client.mobile_number}</td>
                       <td>{client.address}</td>
+                      <td>{client.state}</td>
+                      <td>{client.state_code}</td>
                       <td>
                         <div className="d-flex justify-content-center gap-3 align-items-center position-relative">
                           <button

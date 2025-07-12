@@ -81,9 +81,9 @@ const InvoiceHeader = ({ formData }) => (
             <View style={styles.leftColumn}>
                 <View style={styles.companyNameSection} >
                     <Text style={styles.bold}>{formData?.businessName}</Text>
-                    <Text>{formData?.businessAddress}</Text>
-                    <Text>GSTIN/UIN: {"--"}</Text>
-                    <Text>Email: {formData?.businessEmail}</Text>
+                    <Text>Address:{formData?.businessAddress}</Text>
+                    <Text>GSTIN/UIN: {formData?.businessGst}</Text>
+                    <Text>State: {formData?.businessState}, State Code: {formData?.businessStateCode}</Text>
                     <Text>Contact: {formData?.businessNumber}</Text>
                 </View>
                 {/* Consignee Section */}
@@ -92,7 +92,7 @@ const InvoiceHeader = ({ formData }) => (
                     <Text style={styles.bold}>{formData?.shipToName}</Text>
                     <Text>{formData?.shipToAddress}</Text>
                     <Text>GSTIN/UIN: {formData?.shipToGst}</Text>
-                    <Text>Email: {formData?.shipToEmail}</Text>
+                    <Text>State: {formData?.shipToState}, State Code: {formData?.shipToStateCode}</Text>
                     <Text style={{ marginBottom: "5px" }}>Contact: {formData?.shipToMobile}</Text>
                 </View>
                 {/* Buyer Section */}
@@ -101,7 +101,7 @@ const InvoiceHeader = ({ formData }) => (
                     <Text style={styles.bold}>{formData?.billName}</Text>
                     <Text>{formData?.billAddress}</Text>
                     <Text>GSTIN/UIN: {formData?.gst_no}</Text>
-                    <Text>Email: {formData?.billEmail}</Text>
+                    <Text>State: {formData?.billState}, State Code: {formData?.billStateCode}</Text>
                     <Text>Contact: {formData?.billMobile}</Text>
                 </View>
             </View>

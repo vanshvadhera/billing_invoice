@@ -275,10 +275,10 @@ const TaxInvoicePDF = ({ formData }) => {
                     <Text style={styles.tableCellDescription}>{item?.description}</Text>
                     <Text style={styles.tableCellHSN}>{item?.hsnCode}</Text>
                     <Text style={styles.tableCellGSTQuantity}>
-                      {item?.quantity} {item?.selectedOption?.item?.unit_measure}
+                      {item?.quantity} {item?.selectedOption?.item?.unit_measure === "pcs" ? "NOS" : item?.selectedOption?.item?.unit_measure}
                     </Text>
                     <Text style={styles.tableCellRate}>{item?.rate?.toFixed(2)}</Text>
-                    <Text style={styles.tableCellRatePer}>{item?.selectedOption?.item?.unit_measure}</Text>
+                    <Text style={styles.tableCellRatePer}>{item?.selectedOption?.item?.unit_measure === "pcs" ? "NOS" : item?.selectedOption?.item?.unit_measure}</Text>
                     <Text style={styles.tableCellAmount}>{item?.total?.toFixed(2)}</Text>
                   </View>
                 ))}

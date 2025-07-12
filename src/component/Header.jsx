@@ -185,7 +185,7 @@ export default function Header() {
               </li>}
               {user?.admin && <li className="nav-item">
                 <Link className="nav-link " to="/create/client">
-                  Create Client
+                  Create User
                 </Link>
               </li>}
               <li className="nav-item ">
